@@ -11,8 +11,8 @@ import RxSwift
 protocol ViewModel { }
 
 class TamagochiViewController<ViewModel>: UIViewController {
-    private let disposeBag = DisposeBag()
-    private let viewModel: ViewModel
+    let disposeBag = DisposeBag()
+    let viewModel: ViewModel
     
     override func viewDidLoad() {
         super.viewDidLoad()
