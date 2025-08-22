@@ -31,7 +31,7 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
         
         collectionView.register(ChoiceCollectionViewCell.self)
         collectionView.backgroundColor = nil
-        collectionView.collectionViewLayout = layout(collectionView)
+        collectionView.collectionViewLayout = layout()
     }
     
     private func bind() {
@@ -44,7 +44,7 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
             .disposed(by: disposeBag)
     }
     
-    private func layout(_ collectionView: UICollectionView) -> UICollectionViewFlowLayout {
+    private func layout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = .init(width: 100, height: 150)
         layout.sectionInset = .init(top: 20, left: 20, bottom: 20, right: 20)
