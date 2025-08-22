@@ -46,9 +46,8 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
         collectionView.rx.modelSelected(Tamagochi.self)
             .asDriver()
             .drive {
-                let alert = AlertViewController()
+                let alert = AlertViewController(tamagochi: $0)
                 self.present(alert, animated: false)
-                _ = $0
             }
             .disposed(by: disposeBag)
     }

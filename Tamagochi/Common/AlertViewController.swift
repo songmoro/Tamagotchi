@@ -9,19 +9,21 @@ import UIKit
 import SnapKit
 
 final class AlertViewController: UIViewController {
+    let tamagochi: Tamagochi
     let contentView = UIView()
     let tamagochiView = TamagochiView()
     let descriptionLabel = UILabel()
     let cancelButton = UIButton()
     let acceptButton = UIButton()
     
-    override var modalPresentationStyle: UIModalPresentationStyle {
-        get {
-            UIModalPresentationStyle.overCurrentContext
-        }
-        set {
-            
-        }
+    init(tamagochi: Tamagochi) {
+        self.tamagochi = tamagochi
+        super.init(nibName: nil, bundle: nil)
+        modalPresentationStyle = .overCurrentContext
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -74,17 +76,11 @@ final class AlertViewController: UIViewController {
         contentView.clipsToBounds = true
         contentView.backgroundColor = .background
         
-        tamagochiView.imageView.image = UIImage(resource: ._1_1)
-        
+        tamagochiView.imageView.image = UIImage(resource: tamagochi.image)
+        tamagochiView.setTitle(tamagochi.name)
         underlineView.backgroundColor = .tint
         
-        descriptionLabel.text = """
-        저는 방실방실 다마고치입니당 키는 100km
-        몸무게는 150톤이에용
-        성격은 화끈하고 날라다닙니당~!
-        열심히 잘 먹고 잘 클 자신은
-        있답니당 방실방실!
-        """
+        descriptionLabel.text = tamagochi.profile
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
         descriptionLabel.textColor = .tint
@@ -98,9 +94,9 @@ final class AlertViewController: UIViewController {
         
         cancelButton.configuration = configuration
         cancelButton.configuration?.title = "취소"
+        cancelButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
         acceptButton.configuration = configuration
         acceptButton.configuration?.title = "시작하기"
-        cancelButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
     }
     
     @objc func dismissAlert() {

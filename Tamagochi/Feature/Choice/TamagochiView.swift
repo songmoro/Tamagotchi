@@ -41,9 +41,13 @@ final class TamagochiView: UIView {
         configuration.background.backgroundColor = .clear
         configuration.background.strokeColor = .tint
         configuration.background.cornerRadius = 4
-        configuration.attributedTitle = .init("따끔따끔 다마고치", attributes: .init([.font: UIFont.systemFont(ofSize: 12), .foregroundColor: UIColor.tint]))
+        configuration.attributedTitle = .init()
         configuration.contentInsets = .init(top: 4, leading: 4, bottom: 4, trailing: 4)
         
         label.configuration = configuration
+    }
+    
+    func setTitle(_ string: String) {
+        label.configuration?.attributedTitle = .init(string, attributes: .init([.font: UIFont.systemFont(ofSize: 12), .foregroundColor: UIColor.tint]))
     }
 }
