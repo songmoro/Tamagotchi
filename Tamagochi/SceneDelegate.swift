@@ -15,7 +15,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let navigationViewController = UINavigationController()
-        navigationViewController.viewControllers = [ChoiceViewController()]
+        let choiveVC = ChoiceViewController(viewModel: ChoiceViewModel())
+        navigationViewController.viewControllers = [choiveVC]
         
         window?.rootViewController = navigationViewController
         window?.makeKeyAndVisible()
