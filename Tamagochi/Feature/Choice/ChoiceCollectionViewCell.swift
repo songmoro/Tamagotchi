@@ -34,10 +34,10 @@ final class ChoiceCollectionViewCell: UICollectionViewCell, IsIdentifiable {
         label.isUserInteractionEnabled = false
         
         var configuration = UIButton.Configuration.filled()
-        configuration.background.backgroundColor = .darkGray
-        configuration.background.strokeColor = .label
+        configuration.background.backgroundColor = .clear
+        configuration.background.strokeColor = .tint
         configuration.background.cornerRadius = 4
-        configuration.attributedTitle = .init("", attributes: .init([.font: UIFont.systemFont(ofSize: 12)]))
+        configuration.attributedTitle = .init("", attributes: .init([.font: UIFont.systemFont(ofSize: 12), .foregroundColor: UIColor.tint]))
         configuration.contentInsets = .init(top: 4, leading: 4, bottom: 4, trailing: 4)
         
         label.configuration = configuration

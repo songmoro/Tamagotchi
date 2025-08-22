@@ -39,7 +39,7 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
             .asDriver(onErrorJustReturn: [])
             .drive(collectionView.rx.items(cellIdentifier: ChoiceCollectionViewCell.identifier, cellType: ChoiceCollectionViewCell.self)) {
                 $2.imageView.image = UIImage(resource: $1.image)
-                $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12)]))
+                $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
             }
             .disposed(by: disposeBag)
         
