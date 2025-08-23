@@ -16,8 +16,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.overrideUserInterfaceStyle = .light
         
         let navigationViewController = UINavigationController()
-        let choiveVC = ChoiceViewController(viewModel: ChoiceViewModel())
-        navigationViewController.viewControllers = [choiveVC]
+        
+        if let data = UserDefaults.standard.data(forKey: "tamagochi"), let character = try? PropertyListDecoder().decode(TamagochiCharacter.self, from: data) {
+            let mainVC = MainViewController(viewModel: MainViewModel(character: character))
+            navigationViewController.viewControllers = [mainVC]
+        }
+        else {
+            let choiveVC = ChoiceViewController(viewModel: ChoiceViewModel())
+            navigationViewController.viewControllers = [choiveVC]
+        }
         
         window?.rootViewController = navigationViewController
         window?.makeKeyAndVisible()

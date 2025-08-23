@@ -5,6 +5,7 @@
 //  Created by 송재훈 on 8/23/25.
 //
 
+import Foundation
 import RxSwift
 import RxCocoa
 
@@ -25,9 +26,9 @@ final class MainViewModel: ViewModel {
     let nickname: String
     let character: TamagochiCharacter
     
-    init(nickname: String = "대장", tamagochi: Tamagochi) {
+    init(nickname: String = "대장", character: TamagochiCharacter) {
         self.nickname = nickname
-        self.character = .init(tamagochi: tamagochi)
+        self.character = character
     }
     
     func transform(_ input: Input) -> Output {
@@ -36,6 +37,7 @@ final class MainViewModel: ViewModel {
         
         let nickname = BehaviorRelay(value: self.nickname)
         let character = BehaviorRelay(value: self.character)
+        let save = BehaviorRelay(value: self.character)
         
         input.foodText
             .map { Int($0) ?? 0}
@@ -51,7 +53,7 @@ final class MainViewModel: ViewModel {
                 
                 return newCharacter
             }
-            .bind(to: character)
+            .bind(to: save)
             .disposed(by: disposeBag)
         
         input.waterText
@@ -68,13 +70,16 @@ final class MainViewModel: ViewModel {
                 
                 return newCharacter
             }
-            .bind(to: character)
+            .bind(to: save)
             .disposed(by: disposeBag)
         
-//        character
-//            .do(onNext: {
-//                UserDefaults.standard.set(<#T##value: Any?##Any?#>, forKey: <#T##String#>)
-//            })
+        save
+            .do(onNext: {
+                let data = try? PropertyListEncoder().encode($0)
+                UserDefaults.standard.set(data, forKey: "tamagochi")
+            })
+            .bind(to: character)
+            .disposed(by: disposeBag)
         
         return .init(nickname: nickname.asDriver(), character: character.asDriver())
     }

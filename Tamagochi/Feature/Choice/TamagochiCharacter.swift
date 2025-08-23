@@ -5,7 +5,7 @@
 //  Created by 송재훈 on 8/23/25.
 //
 
-struct TamagochiCharacter {
+struct TamagochiCharacter: Codable {
     var tamagochi: Tamagochi
     var level: Int {
         min(10, max(1, ((food / 5) + (water / 2)) / 10))

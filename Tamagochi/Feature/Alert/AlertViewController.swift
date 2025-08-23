@@ -48,8 +48,8 @@ final class AlertViewController: TamagochiViewController<AlertViewModel> {
             .disposed(by: disposeBag)
         
         output.start
-            .drive(with: self) { owner, tamagochi in
-                let vc = MainViewController(viewModel: .init(tamagochi: tamagochi))
+            .drive(with: self) { owner, character in
+                let vc = MainViewController(viewModel: .init(character: character))
                 owner.dismiss(animated: false)
                 (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]
             }

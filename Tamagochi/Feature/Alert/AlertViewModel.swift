@@ -17,7 +17,7 @@ final class AlertViewModel: ViewModel {
     }
     struct Output {
         let dismiss: Driver<Void>
-        let start: Driver<Tamagochi>
+        let start: Driver<TamagochiCharacter>
     }
     
     let tamagochi: Tamagochi
@@ -29,7 +29,7 @@ final class AlertViewModel: ViewModel {
     func transform(_ input: Input) -> Output {
         let dismiss = PublishSubject<Void>()
         let acceptTap = input.acceptTap.share()
-        let start = PublishSubject<Tamagochi>()
+        let start = PublishSubject<TamagochiCharacter>()
         
         Observable.merge(input.cancelTap, acceptTap)
             .bind(to: dismiss)
@@ -37,11 +37,12 @@ final class AlertViewModel: ViewModel {
         
         acceptTap
             .withUnretained(self)
-            .compactMap { (owner, _) -> Tamagochi? in
+            .compactMap { (owner, _) -> TamagochiCharacter? in
                 let tamagochi = owner.tamagochi
                 
                 if let type = tamagochi.type?.description {
-                    return Tamagochi(imageName: type + "-" + "1", name: tamagochi.name)
+                    let newTamagochi = Tamagochi(imageName: type + "-" + "1", name: tamagochi.name)
+                    return TamagochiCharacter(tamagochi: newTamagochi)
                 }
                 return nil
             }
@@ -50,7 +51,7 @@ final class AlertViewModel: ViewModel {
         
         return .init(
             dismiss: dismiss.asDriver(onErrorJustReturn: ()),
-            start: start.asDriver(onErrorJustReturn: .init(imageName: "", name: ""))
+            start: start.asDriver(onErrorJustReturn: .init(tamagochi: .init(imageName: "", name: "")))
         )
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct Tamagochi {
+struct Tamagochi: Codable {
     let imageName: String
     let name: String
     var profile: String {
