@@ -14,8 +14,10 @@ final class MainViewModel: ViewModel {
     private let disposeBag = DisposeBag()
     
     struct Input {
-        let feedFood: Observable<Int>
-        let feedWater: Observable<Int>
+        let foodText: Observable<String>
+        let foodButtonTap: Observable<Void>
+        let waterText: Observable<String>
+        let waterButtonTap: Observable<Void>
     }
     struct Output {
         let nickname: Driver<String>
@@ -31,10 +33,19 @@ final class MainViewModel: ViewModel {
     }
     
     func transform(_ input: Input) -> Output {
+        let foodInt = BehaviorRelay(value: 0)
+        let waterInt = BehaviorRelay(value: 0)
+        
         let nickname = BehaviorRelay(value: self.nickname)
         let character = BehaviorRelay(value: self.character)
         
-        input.feedFood
+        input.foodText
+            .map { Int($0) ?? 0}
+            .bind(to: foodInt)
+            .disposed(by: disposeBag)
+        
+        input.foodButtonTap
+            .withLatestFrom(foodInt)
             .withLatestFrom(character) {
                 var newCharacter = $1
                 newCharacter.food += $0
@@ -44,7 +55,13 @@ final class MainViewModel: ViewModel {
             .bind(to: character)
             .disposed(by: disposeBag)
         
-        input.feedWater
+        input.waterText
+            .map { Int($0) ?? 0}
+            .bind(to: waterInt)
+            .disposed(by: disposeBag)
+        
+        input.waterButtonTap
+            .withLatestFrom(waterInt)
             .withLatestFrom(character) {
                 var newCharacter = $1
                 newCharacter.water += $0
@@ -74,9 +91,21 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
     }
     
     private func bind() {
-//        let output = viewModel.transform(
-//            .init(feedFood: <#T##Observable<Int>#>, feedWater: <#T##Observable<Int>#>)
-//        )
+        let output = viewModel.transform(
+            .init(
+                foodText: foodTextField.rx.text.orEmpty.asObservable(),
+                foodButtonTap: foodFeedButton.rx.tap.asObservable(),
+                waterText: waterTextField.rx.text.orEmpty.asObservable(),
+                waterButtonTap: waterFeedButton.rx.tap.asObservable()
+            )
+        )
+        
+        output.character
+            .map {
+                "LV\($0.level) • 밥알 \($0.food)개 • 물방울 \($0.water)개"
+            }
+            .drive(tamagochiLabel.rx.text)
+            .disposed(by: disposeBag)
     }
     
     private func configure() {
