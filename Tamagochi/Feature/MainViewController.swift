@@ -46,6 +46,7 @@ final class MainViewModel: ViewModel {
         
         input.foodButtonTap
             .withLatestFrom(foodInt)
+            .filter { 1..<100 ~= $0 }
             .withLatestFrom(character) {
                 var newCharacter = $1
                 newCharacter.food += $0
@@ -62,6 +63,7 @@ final class MainViewModel: ViewModel {
         
         input.waterButtonTap
             .withLatestFrom(waterInt)
+            .filter { 1..<50 ~= $0 }
             .withLatestFrom(character) {
                 var newCharacter = $1
                 newCharacter.water += $0
@@ -70,6 +72,11 @@ final class MainViewModel: ViewModel {
             }
             .bind(to: character)
             .disposed(by: disposeBag)
+        
+//        character
+//            .do(onNext: {
+//                UserDefaults.standard.set(<#T##value: Any?##Any?#>, forKey: <#T##String#>)
+//            })
         
         return .init(nickname: nickname.asDriver(), character: character.asDriver())
     }
