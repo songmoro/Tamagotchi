@@ -38,16 +38,16 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
         Observable.just(viewModel.data)
             .asDriver(onErrorJustReturn: [])
             .drive(collectionView.rx.items(cellIdentifier: ChoiceCollectionViewCell.identifier, cellType: ChoiceCollectionViewCell.self)) {
-                $2.isUserInteractionEnabled = $1.image != .no
-                $2.imageView.image = UIImage(resource: $1.image)
+                $2.isUserInteractionEnabled = $1.imageName != "noImage"
+                $2.imageView.image = UIImage(named: $1.imageName)
                 $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
             }
             .disposed(by: disposeBag)
         
         collectionView.rx.modelSelected(Tamagochi.self)
             .asDriver()
-            .map(AlertViewController.init(tamagochi:))
-            .drive(with: self) { owner, alert in
+            .drive(with: self) { owner, tamagochi in
+                let alert = AlertViewController(viewModel: .init(tamagochi: tamagochi))
                 owner.present(alert, animated: false)
             }
             .disposed(by: disposeBag)

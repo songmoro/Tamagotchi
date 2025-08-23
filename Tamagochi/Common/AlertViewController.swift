@@ -10,19 +10,62 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class AlertViewController: UIViewController {
+final class AlertViewModel: ViewModel {
     private let disposeBag = DisposeBag()
     
+    struct Input {
+        let cancelTap: Observable<Void>
+        let acceptTap: Observable<Void>
+    }
+    struct Output {
+        let dismiss: Driver<Void>
+        let start: Driver<Tamagochi>
+    }
+    
     let tamagochi: Tamagochi
+    
+    init(tamagochi: Tamagochi) {
+        self.tamagochi = tamagochi
+    }
+    
+    func transform(_ input: Input) -> Output {
+        let dismiss = PublishSubject<Void>()
+        let acceptTap = input.acceptTap.share()
+        let start = PublishSubject<Tamagochi>()
+        
+        Observable.merge(input.cancelTap, acceptTap)
+            .bind(to: dismiss)
+            .disposed(by: disposeBag)
+        
+        acceptTap
+            .withUnretained(self)
+            .compactMap { (owner, _) -> Tamagochi? in
+                let tamagochi = owner.tamagochi
+                
+                if let type = tamagochi.type?.description {
+                    return Tamagochi(imageName: type + "-" + "1", name: tamagochi.name)
+                }
+                return nil
+            }
+            .bind(to: start)
+            .disposed(by: disposeBag)
+        
+        return .init(
+            dismiss: dismiss.asDriver(onErrorJustReturn: ()),
+            start: start.asDriver(onErrorJustReturn: .init(imageName: "", name: ""))
+        )
+    }
+}
+
+final class AlertViewController: TamagochiViewController<AlertViewModel> {
     let contentView = UIView()
     let tamagochiView = TamagochiView()
     let descriptionLabel = UILabel()
     let cancelButton = UIButton()
     let acceptButton = UIButton()
     
-    init(tamagochi: Tamagochi) {
-        self.tamagochi = tamagochi
-        super.init(nibName: nil, bundle: nil)
+    override init(viewModel: AlertViewModel) {
+        super.init(viewModel: viewModel)
         modalPresentationStyle = .overCurrentContext
     }
     
@@ -37,17 +80,23 @@ final class AlertViewController: UIViewController {
     }
     
     private func bind() {
-        cancelButton.rx.tap
-            .asDriver()
-            .drive(with: self) { owner, _ in
-                owner.dismiss(animated: false)
+        let output = viewModel.transform(
+            .init(
+                cancelTap: cancelButton.rx.tap.asObservable(),
+                acceptTap: acceptButton.rx.tap.asObservable()
+            )
+        )
+        
+        output.dismiss
+            .drive(with: self) {
+                _ = $1
+                $0.dismiss(animated: false)
             }
             .disposed(by: disposeBag)
         
-        acceptButton.rx.tap
-            .asDriver()
-            .drive(with: self) { owner, _ in
-                let vc = MainViewController(viewModel: .init(tamagochi: owner.tamagochi))
+        output.start
+            .drive(with: self) { owner, tamagochi in
+                let vc = MainViewController(viewModel: .init(tamagochi: tamagochi))
                 owner.dismiss(animated: false)
                 (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]
             }
@@ -99,11 +148,11 @@ final class AlertViewController: UIViewController {
         contentView.clipsToBounds = true
         contentView.backgroundColor = .background
         
-        tamagochiView.imageView.image = UIImage(resource: tamagochi.image)
-        tamagochiView.setTitle(tamagochi.name)
+        tamagochiView.imageView.image = UIImage(named: viewModel.tamagochi.imageName)
+        tamagochiView.setTitle(viewModel.tamagochi.name)
         underlineView.backgroundColor = .tint
         
-        descriptionLabel.text = tamagochi.profile
+        descriptionLabel.text = viewModel.tamagochi.profile
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
         descriptionLabel.textColor = .tint

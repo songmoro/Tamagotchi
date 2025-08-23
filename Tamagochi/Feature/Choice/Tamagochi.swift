@@ -8,7 +8,7 @@
 import UIKit
 
 struct Tamagochi {
-    let image: ImageResource
+    let imageName: String
     let name: String
     var profile: String {
         """
@@ -19,10 +19,17 @@ struct Tamagochi {
         있답니당 방실방실!
         """
     }
+    
+    var type: Int? {
+        Int(imageName.first?.description ?? "")
+    }
+    var level: Int? {
+        Int(imageName.last?.description ?? "")
+    }
 }
 
 extension Tamagochi: CaseIterable {
     static var allCases: [Tamagochi] {
-        [.init(image: ._1_6, name: "따끔따끔 다마고치"), .init(image: ._2_6, name: "방실방실 다마고치"), .init(image: ._3_6, name: "반짝반짝 다마고치")] + Array(repeating: .init(image: .no, name: "준비중이에요"), count: 21)
+        [.init(imageName: "1-6", name: "따끔따끔 다마고치"), .init(imageName: "2-6", name: "방실방실 다마고치"), .init(imageName: "3-6", name: "반짝반짝 다마고치")] + Array(repeating: .init(imageName: "noImage", name: "준비중이에요"), count: 21)
     }
 }

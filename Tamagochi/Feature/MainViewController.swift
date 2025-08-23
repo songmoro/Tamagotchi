@@ -157,7 +157,7 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             $0.height.equalTo(40)
         }
         
-        tamagochiView.imageView.image = UIImage(resource: viewModel.character.tamagochi.image)
+        tamagochiView.imageView.image = UIImage(named: viewModel.character.tamagochi.imageName)
         tamagochiView.setTitle(viewModel.character.tamagochi.name)
         
         tamagochiLabel.text = "LV\(viewModel.character.level) • 밥알 \(viewModel.character.food)개 • 물방울 \(viewModel.character.water)개"
