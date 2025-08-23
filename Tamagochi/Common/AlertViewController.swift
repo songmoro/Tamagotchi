@@ -46,9 +46,10 @@ final class AlertViewController: UIViewController {
         
         acceptButton.rx.tap
             .asDriver()
-            .drive(with: self) { owner, tamagochi in
+            .drive(with: self) { owner, _ in
+                let vc = MainViewController(viewModel: .init(tamagochi: owner.tamagochi))
                 owner.dismiss(animated: false)
-                (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [MainViewController(viewModel: .init())]
+                (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]
             }
             .disposed(by: disposeBag)
     }
