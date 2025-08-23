@@ -7,8 +7,12 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 final class AlertViewController: UIViewController {
+    private let disposeBag = DisposeBag()
+    
     let tamagochi: Tamagochi
     let contentView = UIView()
     let tamagochiView = TamagochiView()
@@ -29,6 +33,24 @@ final class AlertViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        bind()
+    }
+    
+    private func bind() {
+        cancelButton.rx.tap
+            .asDriver()
+            .drive(with: self) { owner, _ in
+                owner.dismiss(animated: false)
+            }
+            .disposed(by: disposeBag)
+        
+        acceptButton.rx.tap
+            .asDriver()
+            .drive(with: self) { owner, tamagochi in
+                owner.dismiss(animated: false)
+                (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [MainViewController(viewModel: .init())]
+            }
+            .disposed(by: disposeBag)
     }
     
     private func configure() {
@@ -94,12 +116,7 @@ final class AlertViewController: UIViewController {
         
         cancelButton.configuration = configuration
         cancelButton.configuration?.title = "취소"
-        cancelButton.addTarget(self, action: #selector(dismissAlert), for: .touchUpInside)
         acceptButton.configuration = configuration
         acceptButton.configuration?.title = "시작하기"
-    }
-    
-    @objc func dismissAlert() {
-        dismiss(animated: false)
     }
 }
