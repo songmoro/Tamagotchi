@@ -12,11 +12,11 @@ import RxCocoa
 
 final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewModel> {
     private let mainViewModel: MainViewModel
-    let contentView = UIView()
-    let tamagochiView = TamagochiView()
-    let descriptionLabel = UILabel()
-    let cancelButton = UIButton()
-    let acceptButton = UIButton()
+    private let contentView = UIView()
+    private let tamagochiView = TamagochiView()
+    private let descriptionLabel = UILabel()
+    private let cancelButton = UIButton()
+    private let acceptButton = UIButton()
     
     init(viewModel: ChangeAlertViewModel, mainViewModel: MainViewModel) {
         self.mainViewModel = mainViewModel

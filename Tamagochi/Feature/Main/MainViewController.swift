@@ -11,17 +11,16 @@ import RxSwift
 import RxCocoa
 
 final class MainViewController: TamagochiViewController<MainViewModel> {
-    let bubbleImageView = UIImageView(image: .bubble)
-    let bubbleLabel = UILabel()
-    let tamagochiView = TamagochiView()
+    private let bubbleImageView = UIImageView(image: .bubble)
+    private let bubbleLabel = UILabel()
+    private let tamagochiView = TamagochiView()
+    private let tamagochiLabel = UILabel()
+    private let foodTextField = UITextField()
+    private let foodFeedButton = UIButton()
+    private let waterTextField = UITextField()
+    private let waterFeedButton = UIButton()
     
-    let tamagochiLabel = UILabel()
-    let foodTextField = UITextField()
-    let foodFeedButton = UIButton()
-    let waterTextField = UITextField()
-    let waterFeedButton = UIButton()
-    
-    let becomeRoot = PublishRelay<Void>()
+    private let becomeRoot = PublishRelay<Void>()
     
     override func viewDidLoad() {
         super.viewDidLoad()

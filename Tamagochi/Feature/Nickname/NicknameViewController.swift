@@ -12,7 +12,7 @@ import RxCocoa
 
 final class NicknameViewController: TamagochiViewController<NicknameViewModel> {
     private let mainViewModel: MainViewModel
-    let nicknameTextField = UITextField()
+    private let nicknameTextField = UITextField()
     
     init(viewModel: NicknameViewModel, mainViewModel: MainViewModel) {
         self.mainViewModel = mainViewModel
