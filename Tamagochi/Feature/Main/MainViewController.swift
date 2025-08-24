@@ -43,9 +43,19 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             }
             .drive(tamagochiLabel.rx.text)
             .disposed(by: disposeBag)
+        
+        navigationItem.rightBarButtonItem?.rx.tap
+            .asDriver()
+            .drive(with: self) {
+                _ = $1
+                let settingsVC = SettingsViewController(viewModel: .init())
+                $0.navigationController?.pushViewController(settingsVC, animated: true)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func configure() {
+        navigationItem.backButtonTitle = ""
         navigationItem.title = "\(viewModel.nickname)님의 다마고치"
         navigationItem.rightBarButtonItem = .init(image: UIImage(systemName: "person.circle"), style: .plain, target: nil, action: nil)
         
