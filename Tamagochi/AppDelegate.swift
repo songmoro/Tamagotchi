@@ -12,6 +12,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         UIButton.appearance().tintColor = .tint
         UINavigationBar.appearance().titleTextAttributes = [.foregroundColor: UIColor.tint]
+        UIBarButtonItem.appearance().tintColor = .tint
         return true
     }
     
