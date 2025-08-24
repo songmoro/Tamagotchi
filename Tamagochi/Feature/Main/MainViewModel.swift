@@ -61,6 +61,7 @@ final class MainViewModel: ViewModel {
         let waterInt = BehaviorRelay(value: 0)
         
         input.foodText
+            .map { $0.isEmpty ? "1" : $0 }
             .map { Int($0) ?? 0 }
             .bind(to: foodInt)
             .disposed(by: disposeBag)
@@ -78,7 +79,8 @@ final class MainViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         input.waterText
-            .map { Int($0) ?? 0}
+            .map { $0.isEmpty ? "1" : $0 }
+            .map { Int($0) ?? 0 }
             .bind(to: waterInt)
             .disposed(by: disposeBag)
         
