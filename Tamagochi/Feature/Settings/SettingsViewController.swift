@@ -30,6 +30,7 @@ final class SettingsViewModel: ViewModel {
     }
     struct Output {
         let settings: Driver<[Settings]>
+        let choice: Driver<Void>
         let reset: Driver<Void>
     }
     
@@ -41,6 +42,7 @@ final class SettingsViewModel: ViewModel {
     
     func transform(input: Input) -> Output {
         let rowAction = PublishRelay<Int>()
+        let choice = PublishRelay<Void>()
         let reset = PublishRelay<Void>()
         
         input.row
@@ -53,7 +55,7 @@ final class SettingsViewModel: ViewModel {
                     
                 }
                 else if $0 == 1 {
-                    
+                    choice.accept(())
                 }
                 else if $0 == 2 {
                     reset.accept(())
@@ -61,12 +63,27 @@ final class SettingsViewModel: ViewModel {
             }
             .disposed(by: disposeBag)
         
-        return .init(settings: Observable.just(settings).asDriver(onErrorJustReturn: []), reset: reset.asDriver(onErrorJustReturn: ()))
+        return .init(
+            settings: Observable.just(settings).asDriver(onErrorJustReturn: []),
+            choice: choice.asDriver(onErrorJustReturn: ()),
+            reset: reset.asDriver(onErrorJustReturn: ())
+        )
     }
 }
 
 final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
+    private let mainViewModel: MainViewModel
     private let tableView = UITableView()
+    
+    init(viewModel: SettingsViewModel, mainViewModel: MainViewModel) {
+        self.mainViewModel = mainViewModel
+        super.init(viewModel: viewModel)
+    }
+    
+    @available(*, deprecated)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,6 +109,13 @@ final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
                 $2.tintColor = .tint
                 $2.backgroundColor = .clear
                 $2.accessoryType = .disclosureIndicator
+            }
+            .disposed(by: disposeBag)
+        
+        output.choice
+            .drive(with: self) { owner, _ in
+                let vc = ChoiceViewController(mainViewModel: owner.mainViewModel)
+                owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
         

@@ -44,11 +44,23 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             .drive(tamagochiLabel.rx.text)
             .disposed(by: disposeBag)
         
+        output.character
+            .map { UIImage(named: $0.tamagochi.imageName) }
+            .drive(tamagochiView.imageView.rx.image)
+            .disposed(by: disposeBag)
+        
+        output.character
+            .map(\.tamagochi.name)
+            .drive(with: self) {
+                $0.tamagochiView.setTitle($1)
+            }
+            .disposed(by: disposeBag)
+        
         navigationItem.rightBarButtonItem?.rx.tap
             .asDriver()
             .drive(with: self) {
                 _ = $1
-                let settingsVC = SettingsViewController(viewModel: .init())
+                let settingsVC = SettingsViewController(viewModel: .init(), mainViewModel: $0.viewModel)
                 $0.navigationController?.pushViewController(settingsVC, animated: true)
             }
             .disposed(by: disposeBag)
@@ -108,15 +120,15 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             $0.height.equalTo(40)
         }
         
-        tamagochiView.imageView.image = UIImage(named: viewModel.character.tamagochi.imageName)
-        tamagochiView.setTitle(viewModel.character.tamagochi.name)
+//        tamagochiView.imageView.image = UIImage(named: viewModel.character.tamagochi.imageName)
+//        tamagochiView.setTitle(viewModel.character.tamagochi.name)
         
         bubbleLabel.text = "좋은 아침!"
         bubbleLabel.textAlignment = .center
         bubbleLabel.numberOfLines = 0
         bubbleLabel.textColor = .tint
         
-        tamagochiLabel.text = "LV\(viewModel.character.level) • 밥알 \(viewModel.character.food)개 • 물방울 \(viewModel.character.water)개"
+//        tamagochiLabel.text = "LV\(viewModel.character.level) • 밥알 \(viewModel.character.food)개 • 물방울 \(viewModel.character.water)개"
         tamagochiLabel.textColor = .tint
         tamagochiLabel.textAlignment = .center
         
