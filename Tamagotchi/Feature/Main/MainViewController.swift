@@ -15,9 +15,9 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
     private let bubbleLabel = UILabel()
     private let tamagotchiView = TamagochiView()
     private let tamagotchiLabel = UILabel()
-    private let foodTextField = UITextField()
+    private let foodTextField = UnderlineTextField()
     private let foodFeedButton = UIButton()
-    private let waterTextField = UITextField()
+    private let waterTextField = UnderlineTextField()
     private let waterFeedButton = UIButton()
     
     private let becomeRoot = PublishRelay<Void>()
@@ -117,7 +117,7 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         
         foodTextField.snp.makeConstraints {
             $0.top.equalTo(tamagotchiLabel.snp.bottom).offset(12)
-            $0.width.equalTo(tamagotchiLabel).multipliedBy(0.6)
+            $0.width.equalTo(tamagotchiLabel).multipliedBy(0.55)
             $0.leading.equalTo(tamagotchiLabel)
             $0.height.equalTo(40)
         }
@@ -141,7 +141,6 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             $0.height.equalTo(40)
         }
         
-        bubbleLabel.text = "좋은 아침!"
         bubbleLabel.textAlignment = .center
         bubbleLabel.numberOfLines = 0
         bubbleLabel.textColor = .tint
@@ -150,7 +149,9 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         tamagotchiLabel.textAlignment = .center
         
         foodTextField.placeholder = "밥 주세용"
+        foodTextField.textAlignment = .center
         waterTextField.placeholder = "물 주세용"
+        waterTextField.textAlignment = .center
         
         var configuration = UIButton.Configuration.plain()
         configuration.background.cornerRadius = 4
@@ -160,9 +161,9 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         foodFeedButton.configuration = configuration
         waterFeedButton.configuration = configuration
         
-        foodFeedButton.configuration?.title = "밥 주기"
+        foodFeedButton.configuration?.title = "밥먹기"
         foodFeedButton.configuration?.image = UIImage(systemName: "leaf.circle")
-        waterFeedButton.configuration?.title = "물 주기"
+        waterFeedButton.configuration?.title = "물먹기"
         waterFeedButton.configuration?.image = UIImage(systemName: "drop.circle")
     }
 }
