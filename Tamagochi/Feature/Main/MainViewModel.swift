@@ -13,6 +13,7 @@ final class MainViewModel: ViewModel {
     private let disposeBag = DisposeBag()
     
     struct Share {
+        let nickname: BehaviorRelay<String>
         let save: BehaviorRelay<TamagochiCharacter>
         let character: BehaviorRelay<TamagochiCharacter>
     }
@@ -28,12 +29,10 @@ final class MainViewModel: ViewModel {
     }
     
     let share: Share
-    let nickname: String
-//    let character: TamagochiCharacter
     
     init(nickname: String = "대장", character: TamagochiCharacter) {
-        self.nickname = nickname
         self.share = Share(
+            nickname: BehaviorRelay(value: nickname),
             save: BehaviorRelay(value: character),
             character: BehaviorRelay(value: character)
         )
@@ -42,6 +41,12 @@ final class MainViewModel: ViewModel {
     }
     
     private func bind() {
+        share.nickname
+            .bind {
+                UserDefaults.standard.set($0, forKey: "nickname")
+            }
+            .disposed(by: disposeBag)
+        
         share.save
             .do(onNext: {
                 let data = try? PropertyListEncoder().encode($0)
@@ -54,10 +59,6 @@ final class MainViewModel: ViewModel {
     func transform(_ input: Input) -> Output {
         let foodInt = BehaviorRelay(value: 0)
         let waterInt = BehaviorRelay(value: 0)
-        
-        let nickname = BehaviorRelay(value: self.nickname)
-//        let character = BehaviorRelay(value: self.character)
-//        let save = BehaviorRelay(value: self.character)
         
         input.foodText
             .map { Int($0) ?? 0}
@@ -93,6 +94,6 @@ final class MainViewModel: ViewModel {
             .bind(to: share.save)
             .disposed(by: disposeBag)
         
-        return .init(nickname: nickname.asDriver(), character: share.character.asDriver())
+        return .init(nickname: share.nickname.asDriver(), character: share.character.asDriver())
     }
 }

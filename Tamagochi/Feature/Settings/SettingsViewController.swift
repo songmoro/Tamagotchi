@@ -30,6 +30,7 @@ final class SettingsViewModel: ViewModel {
     }
     struct Output {
         let settings: Driver<[Settings]>
+        let change: Driver<Void>
         let choice: Driver<Void>
         let reset: Driver<Void>
     }
@@ -42,6 +43,7 @@ final class SettingsViewModel: ViewModel {
     
     func transform(input: Input) -> Output {
         let rowAction = PublishRelay<Int>()
+        let change = PublishRelay<Void>()
         let choice = PublishRelay<Void>()
         let reset = PublishRelay<Void>()
         
@@ -52,7 +54,7 @@ final class SettingsViewModel: ViewModel {
         rowAction
             .bind {
                 if $0 == 0 {
-                    
+                    change.accept(())
                 }
                 else if $0 == 1 {
                     choice.accept(())
@@ -65,6 +67,7 @@ final class SettingsViewModel: ViewModel {
         
         return .init(
             settings: Observable.just(settings).asDriver(onErrorJustReturn: []),
+            change: change.asDriver(onErrorJustReturn: ()),
             choice: choice.asDriver(onErrorJustReturn: ()),
             reset: reset.asDriver(onErrorJustReturn: ())
         )
@@ -109,6 +112,13 @@ final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
                 $2.tintColor = .tint
                 $2.backgroundColor = .clear
                 $2.accessoryType = .disclosureIndicator
+            }
+            .disposed(by: disposeBag)
+        
+        output.change
+            .drive(with: self) { owner, _ in
+                let vc = NicknameViewController(viewModel: .init(), mainViewModel: owner.mainViewModel)
+                owner.navigationController?.pushViewController(vc, animated: true)
             }
             .disposed(by: disposeBag)
         

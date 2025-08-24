@@ -37,6 +37,11 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             )
         )
         
+        output.nickname
+            .map { "\($0)님의 다마고치" }
+            .drive(navigationItem.rx.title)
+            .disposed(by: disposeBag)
+        
         output.character
             .map {
                 "LV\($0.level) • 밥알 \($0.food)개 • 물방울 \($0.water)개"
@@ -68,7 +73,6 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
     
     private func configure() {
         navigationItem.backButtonTitle = ""
-        navigationItem.title = "\(viewModel.nickname)님의 다마고치"
         navigationItem.rightBarButtonItem = .init(image: UIImage(systemName: "person.circle"), style: .plain, target: nil, action: nil)
         
         [bubbleImageView, bubbleLabel, tamagochiView, tamagochiLabel, foodTextField, foodFeedButton, waterTextField, waterFeedButton].forEach(view.addSubview)
@@ -120,15 +124,11 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             $0.height.equalTo(40)
         }
         
-//        tamagochiView.imageView.image = UIImage(named: viewModel.character.tamagochi.imageName)
-//        tamagochiView.setTitle(viewModel.character.tamagochi.name)
-        
         bubbleLabel.text = "좋은 아침!"
         bubbleLabel.textAlignment = .center
         bubbleLabel.numberOfLines = 0
         bubbleLabel.textColor = .tint
         
-//        tamagochiLabel.text = "LV\(viewModel.character.level) • 밥알 \(viewModel.character.food)개 • 물방울 \(viewModel.character.water)개"
         tamagochiLabel.textColor = .tint
         tamagochiLabel.textAlignment = .center
         
