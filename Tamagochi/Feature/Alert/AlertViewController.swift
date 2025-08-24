@@ -101,7 +101,7 @@ final class AlertViewController: TamagochiViewController<AlertViewModel> {
         contentView.clipsToBounds = true
         contentView.backgroundColor = .background
         
-        tamagochiView.imageView.image = UIImage(named: viewModel.tamagochi.imageName)
+        tamagochiView.imageView.image = UIImage(named: viewModel.tamagochi.imageName(level: 6))
         tamagochiView.setTitle(viewModel.tamagochi.name)
         underlineView.backgroundColor = .tint
         

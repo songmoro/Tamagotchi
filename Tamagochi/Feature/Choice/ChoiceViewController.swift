@@ -54,8 +54,8 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
         Observable.just(viewModel.data)
             .asDriver(onErrorJustReturn: [])
             .drive(collectionView.rx.items(cellIdentifier: ChoiceCollectionViewCell.identifier, cellType: ChoiceCollectionViewCell.self)) {
-                $2.isUserInteractionEnabled = $1.imageName != "noImage"
-                $2.imageView.image = UIImage(named: $1.imageName)
+                $2.isUserInteractionEnabled = $1 != .preparing
+                $2.imageView.image = UIImage(named: $1.imageName(level: 6))
                 $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
             }
             .disposed(by: disposeBag)

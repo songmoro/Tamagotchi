@@ -7,29 +7,54 @@
 
 import UIKit
 
-struct Tamagochi: Codable {
-    let imageName: String
-    let name: String
-    var profile: String {
-        """
-        저는 \(name)입니당 키는 100km
-        몸무게는 150톤이에용
-        성격은 화끈하고 날라다닙니당~!
-        열심히 잘 먹고 잘 클 자신은
-        있답니당 방실방실!
-        """
+enum Tamagochi: Int, Codable, CaseIterable {
+    static var allCases: [Tamagochi] = [
+        .cactus, .sun, .starfish,
+        .preparing, .preparing, .preparing, .preparing, .preparing,
+        .preparing, .preparing, .preparing, .preparing, .preparing,
+        .preparing, .preparing, .preparing, .preparing, .preparing,
+        .preparing, .preparing, .preparing, .preparing, .preparing
+    ]
+    
+    case cactus = 1
+    case sun
+    case starfish
+    case preparing
+    
+    var name: String {
+        switch self {
+        case .cactus:
+            "따끔따끔 다마고치"
+        case .sun:
+            "방실방실 다마고치"
+        case .starfish:
+            "반짝반짝 다마고치"
+        case .preparing:
+            "준비중이에요"
+        }
     }
     
-    var type: Int? {
-        Int(imageName.first?.description ?? "")
+    var profile: String {
+        switch self {
+        case .cactus, .sun, .starfish:
+            """
+            저는 \(name)입니당 키는 100km
+            몸무게는 150톤이에용
+            성격은 화끈하고 날라다닙니당~!
+            열심히 잘 먹고 잘 클 자신은
+            있답니당 방실방실!
+            """
+        case .preparing:
+            ""
+        }
     }
-    var level: Int? {
-        Int(imageName.last?.description ?? "")
-    }
-}
-
-extension Tamagochi: CaseIterable {
-    static var allCases: [Tamagochi] {
-        [.init(imageName: "1-6", name: "따끔따끔 다마고치"), .init(imageName: "2-6", name: "방실방실 다마고치"), .init(imageName: "3-6", name: "반짝반짝 다마고치")] + Array(repeating: .init(imageName: "noImage", name: "준비중이에요"), count: 21)
+    
+    func imageName(level: Int) -> String {
+        switch self {
+        case .cactus, .sun, .starfish:
+            return self.rawValue.description + "-" + min(level, 9).description
+        case .preparing:
+            return "noImage"
+        }
     }
 }

@@ -13,6 +13,10 @@ struct TamagochiCharacter: Codable {
     var food: Int
     var water: Int
     
+    var imageName: String {
+        tamagochi.imageName(level: level)
+    }
+    
     init(tamagochi: Tamagochi, food: Int = 0, water: Int = 0) {
         self.tamagochi = tamagochi
         self.food = food

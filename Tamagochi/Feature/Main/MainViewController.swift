@@ -68,7 +68,7 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             .disposed(by: disposeBag)
         
         character
-            .map { UIImage(named: $0.tamagochi.imageName) }
+            .map { UIImage(named: $0.imageName) }
             .drive(tamagochiView.imageView.rx.image)
             .disposed(by: disposeBag)
         

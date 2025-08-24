@@ -40,18 +40,14 @@ final class AlertViewModel: ViewModel {
             .compactMap { (owner, _) -> TamagochiCharacter? in
                 let tamagochi = owner.tamagochi
                 
-                if let type = tamagochi.type?.description {
-                    let newTamagochi = Tamagochi(imageName: type + "-" + "1", name: tamagochi.name)
-                    return TamagochiCharacter(tamagochi: newTamagochi)
-                }
-                return nil
+                return TamagochiCharacter(tamagochi: tamagochi)
             }
             .bind(to: start)
             .disposed(by: disposeBag)
         
         return .init(
             dismiss: dismiss.asDriver(onErrorJustReturn: ()),
-            start: start.asDriver(onErrorJustReturn: .init(tamagochi: .init(imageName: "", name: "")))
+            start: start.asDriver(onErrorJustReturn: .init(tamagochi: .preparing))
         )
     }
 }
