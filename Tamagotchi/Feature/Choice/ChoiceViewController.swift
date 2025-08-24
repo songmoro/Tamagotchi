@@ -83,9 +83,9 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
     private func layout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = .init(width: 100, height: 150)
-        layout.sectionInset = .init(top: 20, left: 20, bottom: 20, right: 20)
-        layout.minimumInteritemSpacing = 20
-        layout.minimumLineSpacing = 20
+        layout.sectionInset = .init(top: 12, left: 12, bottom: 12, right: 12)
+        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 12
         
         return layout
     }
