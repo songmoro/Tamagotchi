@@ -11,6 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class MainViewController: TamagochiViewController<MainViewModel> {
+    let bubbleImageView = UIImageView(image: .bubble)
+    let bubbleLabel = UILabel()
     let tamagochiView = TamagochiView()
     
     let tamagochiLabel = UILabel()
@@ -47,11 +49,22 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         navigationItem.title = "\(viewModel.nickname)님의 다마고치"
         navigationItem.rightBarButtonItem = .init(image: UIImage(systemName: "person.circle"), style: .plain, target: nil, action: nil)
         
-        [tamagochiView, tamagochiLabel, foodTextField, foodFeedButton, waterTextField, waterFeedButton].forEach(view.addSubview)
+        [bubbleImageView, bubbleLabel, tamagochiView, tamagochiLabel, foodTextField, foodFeedButton, waterTextField, waterFeedButton].forEach(view.addSubview)
         
         tamagochiView.snp.makeConstraints {
             $0.width.height.equalToSuperview(\.snp.width).multipliedBy(0.6)
             $0.center.equalToSuperview()
+        }
+        
+        bubbleLabel.snp.makeConstraints {
+            $0.bottom.equalTo(tamagochiView.snp.top).offset(-12)
+            $0.horizontalEdges.equalTo(tamagochiView)
+            $0.height.equalTo(tamagochiView.snp.width).multipliedBy(0.6)
+        }
+        
+        bubbleImageView.snp.makeConstraints {
+            $0.size.equalTo(bubbleLabel).multipliedBy(1.1)
+            $0.center.equalTo(bubbleLabel)
         }
         
         tamagochiLabel.snp.makeConstraints {
@@ -87,6 +100,11 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         
         tamagochiView.imageView.image = UIImage(named: viewModel.character.tamagochi.imageName)
         tamagochiView.setTitle(viewModel.character.tamagochi.name)
+        
+        bubbleLabel.text = "좋은 아침!"
+        bubbleLabel.textAlignment = .center
+        bubbleLabel.numberOfLines = 0
+        bubbleLabel.textColor = .tint
         
         tamagochiLabel.text = "LV\(viewModel.character.level) • 밥알 \(viewModel.character.food)개 • 물방울 \(viewModel.character.water)개"
         tamagochiLabel.textColor = .tint
