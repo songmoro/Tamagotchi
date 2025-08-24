@@ -52,7 +52,7 @@ final class MainViewModel: ViewModel {
         share.save
             .do(onNext: {
                 let data = try? PropertyListEncoder().encode($0)
-                UserDefaults.standard.set(data, forKey: "tamagochi")
+                UserDefaults.standard.set(data, forKey: "tamagotchi")
             })
             .bind(to: share.character)
             .disposed(by: disposeBag)

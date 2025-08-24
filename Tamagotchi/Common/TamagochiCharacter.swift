@@ -6,7 +6,7 @@
 //
 
 struct TamagochiCharacter: Codable {
-    var tamagochi: Tamagochi
+    var tamagotchi: Tamagochi
     var level: Int {
         min(10, max(1, ((food / 5) + (water / 2)) / 10))
     }
@@ -14,11 +14,11 @@ struct TamagochiCharacter: Codable {
     var water: Int
     
     var imageName: String {
-        tamagochi.imageName(level: level)
+        tamagotchi.imageName(level: level)
     }
     
-    init(tamagochi: Tamagochi, food: Int = 0, water: Int = 0) {
-        self.tamagochi = tamagochi
+    init(tamagotchi: Tamagochi, food: Int = 0, water: Int = 0) {
+        self.tamagotchi = tamagotchi
         self.food = food
         self.water = water
     }

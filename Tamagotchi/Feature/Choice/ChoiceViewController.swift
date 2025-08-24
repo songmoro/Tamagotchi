@@ -63,8 +63,8 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
         if let mainViewModel {
             collectionView.rx.modelSelected(Tamagochi.self)
                 .asDriver()
-                .drive(with: self) { owner, tamagochi in
-                    let alert = ChangeAlertViewController(viewModel: .init(tamagochi: tamagochi), mainViewModel: mainViewModel)
+                .drive(with: self) { owner, tamagotchi in
+                    let alert = ChangeAlertViewController(viewModel: .init(tamagotchi: tamagotchi), mainViewModel: mainViewModel)
                     owner.present(alert, animated: false)
                 }
                 .disposed(by: disposeBag)
@@ -72,8 +72,8 @@ final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
         else {
             collectionView.rx.modelSelected(Tamagochi.self)
                 .asDriver()
-                .drive(with: self) { owner, tamagochi in
-                    let alert = AlertViewController(viewModel: .init(tamagochi: tamagochi))
+                .drive(with: self) { owner, tamagotchi in
+                    let alert = AlertViewController(viewModel: .init(tamagotchi: tamagotchi))
                     owner.present(alert, animated: false)
                 }
                 .disposed(by: disposeBag)

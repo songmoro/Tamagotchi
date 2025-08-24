@@ -13,8 +13,8 @@ import RxCocoa
 final class MainViewController: TamagochiViewController<MainViewModel> {
     private let bubbleImageView = UIImageView(image: .bubble)
     private let bubbleLabel = UILabel()
-    private let tamagochiView = TamagochiView()
-    private let tamagochiLabel = UILabel()
+    private let tamagotchiView = TamagochiView()
+    private let tamagotchiLabel = UILabel()
     private let foodTextField = UITextField()
     private let foodFeedButton = UIButton()
     private let waterTextField = UITextField()
@@ -61,20 +61,20 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
                 "LV\($0.level) • 밥알 \($0.food)개 • 물방울 \($0.water)개"
             }
             .drive(with: self) {
-                $0.tamagochiLabel.text = $1
+                $0.tamagotchiLabel.text = $1
                 $0.becomeRoot.accept(())
             }
             .disposed(by: disposeBag)
         
         character
             .map { UIImage(named: $0.imageName) }
-            .drive(tamagochiView.imageView.rx.image)
+            .drive(tamagotchiView.imageView.rx.image)
             .disposed(by: disposeBag)
         
         character
-            .map(\.tamagochi.name)
+            .map(\.tamagotchi.name)
             .drive(with: self) {
-                $0.tamagochiView.setTitle($1)
+                $0.tamagotchiView.setTitle($1)
             }
             .disposed(by: disposeBag)
         
@@ -92,17 +92,17 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         navigationItem.backButtonTitle = ""
         navigationItem.rightBarButtonItem = .init(image: UIImage(systemName: "person.circle"), style: .plain, target: nil, action: nil)
         
-        [bubbleImageView, bubbleLabel, tamagochiView, tamagochiLabel, foodTextField, foodFeedButton, waterTextField, waterFeedButton].forEach(view.addSubview)
+        [bubbleImageView, bubbleLabel, tamagotchiView, tamagotchiLabel, foodTextField, foodFeedButton, waterTextField, waterFeedButton].forEach(view.addSubview)
         
-        tamagochiView.snp.makeConstraints {
+        tamagotchiView.snp.makeConstraints {
             $0.width.height.equalToSuperview(\.snp.width).multipliedBy(0.6)
             $0.center.equalToSuperview()
         }
         
         bubbleLabel.snp.makeConstraints {
-            $0.bottom.equalTo(tamagochiView.snp.top).offset(-12)
-            $0.horizontalEdges.equalTo(tamagochiView)
-            $0.height.equalTo(tamagochiView.snp.width).multipliedBy(0.6)
+            $0.bottom.equalTo(tamagotchiView.snp.top).offset(-12)
+            $0.horizontalEdges.equalTo(tamagotchiView)
+            $0.height.equalTo(tamagotchiView.snp.width).multipliedBy(0.6)
         }
         
         bubbleImageView.snp.makeConstraints {
@@ -110,22 +110,22 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             $0.center.equalTo(bubbleLabel)
         }
         
-        tamagochiLabel.snp.makeConstraints {
-            $0.top.equalTo(tamagochiView.snp.bottom)
-            $0.horizontalEdges.equalTo(tamagochiView)
+        tamagotchiLabel.snp.makeConstraints {
+            $0.top.equalTo(tamagotchiView.snp.bottom)
+            $0.horizontalEdges.equalTo(tamagotchiView)
         }
         
         foodTextField.snp.makeConstraints {
-            $0.top.equalTo(tamagochiLabel.snp.bottom).offset(12)
-            $0.width.equalTo(tamagochiLabel).multipliedBy(0.6)
-            $0.leading.equalTo(tamagochiLabel)
+            $0.top.equalTo(tamagotchiLabel.snp.bottom).offset(12)
+            $0.width.equalTo(tamagotchiLabel).multipliedBy(0.6)
+            $0.leading.equalTo(tamagotchiLabel)
             $0.height.equalTo(40)
         }
         
         foodFeedButton.snp.makeConstraints {
-            $0.top.equalTo(tamagochiLabel.snp.bottom).offset(12)
-            $0.width.equalTo(tamagochiLabel).multipliedBy(0.4)
-            $0.trailing.equalTo(tamagochiLabel)
+            $0.top.equalTo(tamagotchiLabel.snp.bottom).offset(12)
+            $0.width.equalTo(tamagotchiLabel).multipliedBy(0.4)
+            $0.trailing.equalTo(tamagotchiLabel)
             $0.height.equalTo(40)
         }
         
@@ -146,8 +146,8 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
         bubbleLabel.numberOfLines = 0
         bubbleLabel.textColor = .tint
         
-        tamagochiLabel.textColor = .tint
-        tamagochiLabel.textAlignment = .center
+        tamagotchiLabel.textColor = .tint
+        tamagotchiLabel.textAlignment = .center
         
         foodTextField.placeholder = "밥 주세용"
         waterTextField.placeholder = "물 주세용"

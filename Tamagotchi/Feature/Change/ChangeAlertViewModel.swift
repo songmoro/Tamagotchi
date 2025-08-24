@@ -20,10 +20,10 @@ final class ChangeAlertViewModel: ViewModel {
         let change: Driver<TamagochiCharacter>
     }
     
-    let tamagochi: Tamagochi
+    let tamagotchi: Tamagochi
     
-    init(tamagochi: Tamagochi) {
-        self.tamagochi = tamagochi
+    init(tamagotchi: Tamagochi) {
+        self.tamagotchi = tamagotchi
     }
     
     func transform(_ input: Input) -> Output {
@@ -38,16 +38,16 @@ final class ChangeAlertViewModel: ViewModel {
         acceptTap
             .withUnretained(self)
             .compactMap { (owner, _) -> TamagochiCharacter? in
-                let tamagochi = owner.tamagochi
+                let tamagotchi = owner.tamagotchi
                 
-                return TamagochiCharacter(tamagochi: tamagochi)
+                return TamagochiCharacter(tamagotchi: tamagotchi)
             }
             .bind(to: change)
             .disposed(by: disposeBag)
         
         return .init(
             dismiss: dismiss.asDriver(onErrorJustReturn: ()),
-            change: change.asDriver(onErrorJustReturn: .init(tamagochi: .preparing))
+            change: change.asDriver(onErrorJustReturn: .init(tamagotchi: .preparing))
         )
     }
 }

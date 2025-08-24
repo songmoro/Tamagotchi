@@ -71,7 +71,7 @@ final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
                 let alert = UIAlertController(title: "데이터 초기화", message: "정말 다시 처음부터 시작하실 건가용?", preferredStyle: .alert)
                 alert.addAction(.init(title: "아냐!", style: .cancel))
                 alert.addAction(.init(title: "웅", style: .destructive, handler: { _ in
-                    UserDefaults.standard.set(nil, forKey: "tamagochi")
+                    UserDefaults.standard.set(nil, forKey: "tamagotchi")
                     
                     let vc = ChoiceViewController(viewModel: .init())
                     (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]

@@ -13,27 +13,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F8B578CA2E5847DA00130414 /* Tamagochi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tamagochi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F8B578CA2E5847DA00130414 /* Tamagotchi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tamagotchi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8B5794D2E584A3100130414 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		F8B578DC2E5847DC00130414 /* Exceptions for "Tamagochi" folder in "Tamagochi" target */ = {
+		F8B578DC2E5847DC00130414 /* Exceptions for "Tamagotchi" folder in "Tamagotchi" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = F8B578C92E5847DA00130414 /* Tamagochi */;
+			target = F8B578C92E5847DA00130414 /* Tamagotchi */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F8B578CC2E5847DA00130414 /* Tamagochi */ = {
+		F8B578CC2E5847DA00130414 /* Tamagotchi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F8B578DC2E5847DC00130414 /* Exceptions for "Tamagochi" folder in "Tamagochi" target */,
+				F8B578DC2E5847DC00130414 /* Exceptions for "Tamagotchi" folder in "Tamagotchi" target */,
 			);
-			path = Tamagochi;
+			path = Tamagotchi;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -56,7 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				F8B5794D2E584A3100130414 /* .gitignore */,
-				F8B578CC2E5847DA00130414 /* Tamagochi */,
+				F8B578CC2E5847DA00130414 /* Tamagotchi */,
 				F8B578CB2E5847DA00130414 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -64,7 +64,7 @@
 		F8B578CB2E5847DA00130414 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F8B578CA2E5847DA00130414 /* Tamagochi.app */,
+				F8B578CA2E5847DA00130414 /* Tamagotchi.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -72,9 +72,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F8B578C92E5847DA00130414 /* Tamagochi */ = {
+		F8B578C92E5847DA00130414 /* Tamagotchi */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F8B578DD2E5847DC00130414 /* Build configuration list for PBXNativeTarget "Tamagochi" */;
+			buildConfigurationList = F8B578DD2E5847DC00130414 /* Build configuration list for PBXNativeTarget "Tamagotchi" */;
 			buildPhases = (
 				F8B578C62E5847DA00130414 /* Sources */,
 				F8B578C72E5847DA00130414 /* Frameworks */,
@@ -85,16 +85,16 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F8B578CC2E5847DA00130414 /* Tamagochi */,
+				F8B578CC2E5847DA00130414 /* Tamagotchi */,
 			);
-			name = Tamagochi;
+			name = Tamagotchi;
 			packageProductDependencies = (
 				F8B579502E584A9400130414 /* RxCocoa */,
 				F8B579522E584A9400130414 /* RxSwift */,
 				F8B579552E584A9E00130414 /* SnapKit */,
 			);
 			productName = Tamagochi;
-			productReference = F8B578CA2E5847DA00130414 /* Tamagochi.app */;
+			productReference = F8B578CA2E5847DA00130414 /* Tamagotchi.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -112,7 +112,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F8B578C52E5847DA00130414 /* Build configuration list for PBXProject "Tamagochi" */;
+			buildConfigurationList = F8B578C52E5847DA00130414 /* Build configuration list for PBXProject "Tamagotchi" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -130,7 +130,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F8B578C92E5847DA00130414 /* Tamagochi */,
+				F8B578C92E5847DA00130414 /* Tamagotchi */,
 			);
 		};
 /* End PBXProject section */
@@ -163,8 +163,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VA3J8597P8;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Tamagochi/Info.plist;
+				INFOPLIST_FILE = Tamagotchi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -173,7 +174,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moro.Tamagochi;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moro.Tamagotchi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -192,8 +193,9 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = VA3J8597P8;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Tamagochi/Info.plist;
+				INFOPLIST_FILE = Tamagotchi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -202,7 +204,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.moro.Tamagochi;
+				PRODUCT_BUNDLE_IDENTIFIER = com.moro.Tamagotchi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -336,7 +338,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		F8B578C52E5847DA00130414 /* Build configuration list for PBXProject "Tamagochi" */ = {
+		F8B578C52E5847DA00130414 /* Build configuration list for PBXProject "Tamagotchi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8B578E02E5847DC00130414 /* Debug */,
@@ -345,7 +347,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F8B578DD2E5847DC00130414 /* Build configuration list for PBXNativeTarget "Tamagochi" */ = {
+		F8B578DD2E5847DC00130414 /* Build configuration list for PBXNativeTarget "Tamagotchi" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F8B578DE2E5847DC00130414 /* Debug */,

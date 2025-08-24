@@ -1,5 +1,5 @@
 //
-//  ChangeAlertViewController.swift
+//  AlertViewController.swift
 //  Tamagochi
 //
 //  Created by 송재훈 on 8/22/25.
@@ -10,16 +10,14 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewModel> {
-    private let mainViewModel: MainViewModel
+final class AlertViewController: TamagochiViewController<AlertViewModel> {
     private let contentView = UIView()
-    private let tamagochiView = TamagochiView()
+    private let tamagotchiView = TamagochiView()
     private let descriptionLabel = UILabel()
     private let cancelButton = UIButton()
     private let acceptButton = UIButton()
     
-    init(viewModel: ChangeAlertViewModel, mainViewModel: MainViewModel) {
-        self.mainViewModel = mainViewModel
+    override init(viewModel: AlertViewModel) {
         super.init(viewModel: viewModel)
         modalPresentationStyle = .overCurrentContext
     }
@@ -49,17 +47,11 @@ final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewMo
             }
             .disposed(by: disposeBag)
         
-        output.change
-            .withLatestFrom(mainViewModel.share.character.asDriver(), resultSelector: {
-                var newCharacter = $1
-                newCharacter.tamagochi = $0.tamagochi
-                
-                return newCharacter
-            })
+        output.start
             .drive(with: self) { owner, character in
-                owner.mainViewModel.share.character.accept(character)
+                let vc = MainViewController(viewModel: .init(character: character))
                 owner.dismiss(animated: false)
-                (owner.view.window?.rootViewController as? UINavigationController)?.popToRootViewController(animated: true)
+                (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]
             }
             .disposed(by: disposeBag)
     }
@@ -69,7 +61,7 @@ final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewMo
         view.addSubview(contentView)
         let underlineView = UIView()
         
-        [tamagochiView, underlineView, descriptionLabel, cancelButton, acceptButton].forEach(contentView.addSubview)
+        [tamagotchiView, underlineView, descriptionLabel, cancelButton, acceptButton].forEach(contentView.addSubview)
         
         contentView.snp.makeConstraints {
             $0.center.equalToSuperview(\.safeAreaLayoutGuide)
@@ -77,14 +69,14 @@ final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewMo
             $0.width.equalToSuperview().multipliedBy(0.8)
         }
         
-        tamagochiView.snp.makeConstraints {
+        tamagotchiView.snp.makeConstraints {
             $0.size.equalToSuperview(\.snp.width).multipliedBy(0.8)
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview().multipliedBy(0.8)
         }
         
         underlineView.snp.makeConstraints {
-            $0.bottom.horizontalEdges.equalTo(tamagochiView)
+            $0.bottom.horizontalEdges.equalTo(tamagotchiView)
             $0.height.equalTo(1)
         }
         
@@ -109,11 +101,11 @@ final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewMo
         contentView.clipsToBounds = true
         contentView.backgroundColor = .background
         
-        tamagochiView.imageView.image = UIImage(named: viewModel.tamagochi.imageName(level: 6))
-        tamagochiView.setTitle(viewModel.tamagochi.name)
+        tamagotchiView.imageView.image = UIImage(named: viewModel.tamagotchi.imageName(level: 6))
+        tamagotchiView.setTitle(viewModel.tamagotchi.name)
         underlineView.backgroundColor = .tint
         
-        descriptionLabel.text = viewModel.tamagochi.profile
+        descriptionLabel.text = viewModel.tamagotchi.profile
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
         descriptionLabel.textColor = .tint
@@ -128,6 +120,6 @@ final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewMo
         cancelButton.configuration = configuration
         cancelButton.configuration?.title = "취소"
         acceptButton.configuration = configuration
-        acceptButton.configuration?.title = "변경하기"
+        acceptButton.configuration?.title = "시작하기"
     }
 }
