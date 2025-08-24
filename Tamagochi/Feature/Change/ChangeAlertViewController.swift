@@ -59,6 +59,7 @@ final class ChangeAlertViewController: TamagochiViewController<ChangeAlertViewMo
             .drive(with: self) { owner, character in
                 owner.mainViewModel.share.character.accept(character)
                 owner.dismiss(animated: false)
+                (owner.view.window?.rootViewController as? UINavigationController)?.popToRootViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
