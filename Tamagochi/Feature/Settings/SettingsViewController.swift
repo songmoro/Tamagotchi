@@ -26,6 +26,7 @@ final class SettingsViewModel: ViewModel {
     private let disposeBag = DisposeBag()
     
     struct Input {
+        let nickname: Observable<String>
         let row: Observable<Int>
     }
     struct Output {
@@ -35,20 +36,26 @@ final class SettingsViewModel: ViewModel {
         let reset: Driver<Void>
     }
     
-    let settings: [Settings] = [
-        .init(image: UIImage(systemName: "pencil"), text: "내 이름 설정하기", secondaryText: "대장"),
-        .init(image: UIImage(systemName: "moon.fill"), text: "다마고치 변경하기"),
-        .init(image: UIImage(systemName: "goforward"), text: "데이터 초기화")
-    ]
-    
     func transform(input: Input) -> Output {
         let rowAction = PublishRelay<Int>()
+        let settings = BehaviorRelay<[Settings]>(value: [])
         let change = PublishRelay<Void>()
         let choice = PublishRelay<Void>()
         let reset = PublishRelay<Void>()
         
         input.row
             .bind(to: rowAction)
+            .disposed(by: disposeBag)
+        
+        input.nickname
+            .map { nickname -> [Settings] in
+                [
+                    .init(image: UIImage(systemName: "pencil"), text: "내 이름 설정하기", secondaryText: nickname),
+                    .init(image: UIImage(systemName: "moon.fill"), text: "다마고치 변경하기"),
+                    .init(image: UIImage(systemName: "goforward"), text: "데이터 초기화")
+                ]
+            }
+            .bind(to: settings)
             .disposed(by: disposeBag)
         
         rowAction
@@ -66,7 +73,7 @@ final class SettingsViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         return .init(
-            settings: Observable.just(settings).asDriver(onErrorJustReturn: []),
+            settings: settings.asDriver(onErrorJustReturn: []),
             change: change.asDriver(onErrorJustReturn: ()),
             choice: choice.asDriver(onErrorJustReturn: ()),
             reset: reset.asDriver(onErrorJustReturn: ())
@@ -97,6 +104,7 @@ final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
     private func bind() {
         let output = viewModel.transform(
             input: .init(
+                nickname: mainViewModel.share.nickname.asObservable(),
                 row: tableView.rx.itemSelected.map(\.row).asObservable()
             )
         )

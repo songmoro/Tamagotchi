@@ -17,8 +17,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let navigationViewController = UINavigationController()
         
-        if let data = UserDefaults.standard.data(forKey: "tamagochi"), let character = try? PropertyListDecoder().decode(TamagochiCharacter.self, from: data) {
-            let mainVC = MainViewController(viewModel: MainViewModel(character: character))
+        if let data = UserDefaults.standard.data(forKey: "tamagochi"), let character = try? PropertyListDecoder().decode(TamagochiCharacter.self, from: data), let nickname = UserDefaults.standard.string(forKey: "nickname") {
+            let mainVC = MainViewController(viewModel: MainViewModel(nickname: nickname, character: character))
             navigationViewController.viewControllers = [mainVC]
         }
         else {
