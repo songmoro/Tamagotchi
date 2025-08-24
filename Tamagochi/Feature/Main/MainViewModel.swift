@@ -18,6 +18,7 @@ final class MainViewModel: ViewModel {
         let character: BehaviorRelay<TamagochiCharacter>
     }
     struct Input {
+        let bubble: Observable<Void>
         let foodText: Observable<String>
         let foodButtonTap: Observable<Void>
         let waterText: Observable<String>
@@ -26,6 +27,7 @@ final class MainViewModel: ViewModel {
     struct Output {
         let nickname: Driver<String>
         let character: Driver<TamagochiCharacter>
+        let bubble: Driver<String>
     }
     
     let share: Share
@@ -59,6 +61,14 @@ final class MainViewModel: ViewModel {
     func transform(_ input: Input) -> Output {
         let foodInt = BehaviorRelay(value: 0)
         let waterInt = BehaviorRelay(value: 0)
+        let bubble = BehaviorRelay(value: "좋은 아침")
+        
+        input.bubble
+            .map {
+                String("12345678".randomElement()!)
+            }
+            .bind(to: bubble)
+            .disposed(by: disposeBag)
         
         input.foodText
             .map { $0.isEmpty ? "1" : $0 }
@@ -96,6 +106,10 @@ final class MainViewModel: ViewModel {
             .bind(to: share.save)
             .disposed(by: disposeBag)
         
-        return .init(nickname: share.nickname.asDriver(), character: share.character.asDriver())
+        return .init(
+            nickname: share.nickname.asDriver(),
+            character: share.character.asDriver(),
+            bubble: bubble.asDriver()
+        )
     }
 }

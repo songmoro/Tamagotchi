@@ -21,15 +21,23 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
     let waterTextField = UITextField()
     let waterFeedButton = UIButton()
     
+    let becomeRoot = PublishRelay<Void>()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
         bind()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        becomeRoot.accept(())
+    }
+    
     private func bind() {
         let output = viewModel.transform(
             .init(
+                bubble: becomeRoot.asObservable(),
                 foodText: foodTextField.rx.text.orEmpty.asObservable(),
                 foodButtonTap: foodFeedButton.rx.tap.asObservable(),
                 waterText: waterTextField.rx.text.orEmpty.asObservable(),
@@ -37,24 +45,34 @@ final class MainViewController: TamagochiViewController<MainViewModel> {
             )
         )
         
+        let character = output.character
+        
+        Observable.combineLatest(output.bubble.asObservable(), output.nickname.asObservable())
+            .map(+)
+            .bind(to: bubbleLabel.rx.text)
+            .disposed(by: disposeBag)
+        
         output.nickname
             .map { "\($0)님의 다마고치" }
             .drive(navigationItem.rx.title)
             .disposed(by: disposeBag)
         
-        output.character
+        character
             .map {
                 "LV\($0.level) • 밥알 \($0.food)개 • 물방울 \($0.water)개"
             }
-            .drive(tamagochiLabel.rx.text)
+            .drive(with: self) {
+                $0.tamagochiLabel.text = $1
+                $0.becomeRoot.accept(())
+            }
             .disposed(by: disposeBag)
         
-        output.character
+        character
             .map { UIImage(named: $0.tamagochi.imageName) }
             .drive(tamagochiView.imageView.rx.image)
             .disposed(by: disposeBag)
         
-        output.character
+        character
             .map(\.tamagochi.name)
             .drive(with: self) {
                 $0.tamagochiView.setTitle($1)
