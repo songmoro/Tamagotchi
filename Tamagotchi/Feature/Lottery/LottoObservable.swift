@@ -1,5 +1,5 @@
 //
-//  MyObservable.swift
+//  LottoObservable.swift
 //  Tamagotchi
 //
 //  Created by 송재훈 on 8/25/25.
@@ -9,7 +9,7 @@ import Foundation
 import Alamofire
 import RxSwift
 
-final class MyObservable {
+final class LottoObservable {
     private init() { }
     
     static func lottery(no: Int) -> Observable<Lotto> {

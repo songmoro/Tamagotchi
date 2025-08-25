@@ -32,7 +32,7 @@ final class LotteryViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         no
-            .flatMap(MyObservable.lottery(no:))
+            .flatMap(LottoObservable.lottery(no:))
             .map { [$0.drwtNo1, $0.drwtNo2, $0.drwtNo3, $0.drwtNo4, $0.drwtNo5, $0.drwtNo6, $0.bnusNo] }
             .map { $0.map(\.description).joined(separator: ", ") }
             .bind(to: lotto)
