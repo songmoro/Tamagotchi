@@ -11,6 +11,10 @@ import RxSwift
 protocol ViewModel { }
 
 class TamagochiViewController<ViewModel>: UIViewController {
+    deinit {
+        print(self, #function)
+    }
+    
     let disposeBag = DisposeBag()
     let viewModel: ViewModel
     
