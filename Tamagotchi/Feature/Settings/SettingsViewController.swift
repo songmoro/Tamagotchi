@@ -74,7 +74,10 @@ final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
                     UserDefaults.standard.set(nil, forKey: "tamagotchi")
                     
                     let vc = ChoiceViewController(viewModel: .init())
-                    (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]
+                    
+                    guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
+                    guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
+                    navC.viewControllers = [vc]
                 }))
                 
                 owner.present(alert, animated: true)

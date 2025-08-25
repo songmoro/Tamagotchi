@@ -51,7 +51,10 @@ final class AlertViewController: TamagochiViewController<AlertViewModel> {
             .drive(with: self) { owner, character in
                 let vc = MainViewController(viewModel: .init(character: character))
                 owner.dismiss(animated: false)
-                (owner.view.window?.rootViewController as? UINavigationController)?.viewControllers = [vc]
+                
+                guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
+                guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
+                navC.viewControllers = [vc]
             }
             .disposed(by: disposeBag)
     }

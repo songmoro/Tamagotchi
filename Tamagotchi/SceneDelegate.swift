@@ -15,18 +15,26 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.overrideUserInterfaceStyle = .light
         
-        let navigationViewController = UINavigationController()
+        let tabBarController = UITabBarController()
+        let navigationController = UINavigationController()
+        tabBarController.viewControllers = [navigationController, UIViewController(), UIViewController()]
+        
+        if let items = tabBarController.tabBar.items {
+            items[0].title = "다마고치"
+            items[1].title = "로또"
+            items[2].title = "검색"
+        }
         
         if let data = UserDefaults.standard.data(forKey: "tamagotchi"), let character = try? PropertyListDecoder().decode(TamagochiCharacter.self, from: data), let nickname = UserDefaults.standard.string(forKey: "nickname") {
             let mainVC = MainViewController(viewModel: MainViewModel(nickname: nickname, character: character))
-            navigationViewController.viewControllers = [mainVC]
+            navigationController.viewControllers = [mainVC]
         }
         else {
             let choiveVC = ChoiceViewController(viewModel: ChoiceViewModel())
-            navigationViewController.viewControllers = [choiveVC]
+            navigationController.viewControllers = [choiveVC]
         }
         
-        window?.rootViewController = navigationViewController
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
 }
