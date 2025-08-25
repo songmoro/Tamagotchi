@@ -37,6 +37,11 @@
 			path = Tamagotchi;
 			sourceTree = "<group>";
 		};
+		F8B57CEC2E5C5E7C00130414 /* Secret */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Secret;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				F8B5794D2E584A3100130414 /* .gitignore */,
+				F8B57CEC2E5C5E7C00130414 /* Secret */,
 				F8B578CC2E5847DA00130414 /* Tamagotchi */,
 				F8B578CB2E5847DA00130414 /* Products */,
 			);
@@ -88,6 +94,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				F8B578CC2E5847DA00130414 /* Tamagotchi */,
+				F8B57CEC2E5C5E7C00130414 /* Secret */,
 			);
 			name = Tamagotchi;
 			packageProductDependencies = (
