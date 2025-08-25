@@ -1,5 +1,5 @@
 //
-//  TamagochiViewController.swift
+//  ViewController.swift
 //  Tamagochi
 //
 //  Created by 송재훈 on 8/22/25.
@@ -10,7 +10,7 @@ import RxSwift
 
 protocol ViewModel { }
 
-class TamagochiViewController<ViewModel>: UIViewController {
+class ViewController<ViewModel>: UIViewController {
     deinit {
         print(self, #function)
     }

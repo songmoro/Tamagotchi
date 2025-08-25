@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ChoiceViewController: TamagochiViewController<ChoiceViewModel> {
+final class ChoiceViewController: ViewController<ChoiceViewModel> {
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
     private let mainViewModel: MainViewModel?
     

@@ -1,5 +1,5 @@
 //
-//  AlertViewController.swift
+//  ChangeAlertViewController.swift
 //  Tamagochi
 //
 //  Created by 송재훈 on 8/22/25.
@@ -10,14 +10,16 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class AlertViewController: TamagochiViewController<AlertViewModel> {
+final class ChangeAlertViewController: ViewController<ChangeAlertViewModel> {
+    private let mainViewModel: MainViewModel
     private let contentView = UIView()
     private let tamagotchiView = TamagochiView()
     private let descriptionLabel = UILabel()
     private let cancelButton = UIButton()
     private let acceptButton = UIButton()
     
-    override init(viewModel: AlertViewModel) {
+    init(viewModel: ChangeAlertViewModel, mainViewModel: MainViewModel) {
+        self.mainViewModel = mainViewModel
         super.init(viewModel: viewModel)
         modalPresentationStyle = .overCurrentContext
     }
@@ -47,14 +49,20 @@ final class AlertViewController: TamagochiViewController<AlertViewModel> {
             }
             .disposed(by: disposeBag)
         
-        output.start
+        output.change
+            .withLatestFrom(mainViewModel.share.character.asDriver(), resultSelector: {
+                var newCharacter = $1
+                newCharacter.tamagotchi = $0.tamagotchi
+                
+                return newCharacter
+            })
             .drive(with: self) { owner, character in
-                let vc = MainViewController(viewModel: .init(character: character))
+                owner.mainViewModel.share.character.accept(character)
                 owner.dismiss(animated: false)
                 
                 guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
                 guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
-                navC.viewControllers = [vc]
+                navC.popToRootViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
@@ -123,6 +131,6 @@ final class AlertViewController: TamagochiViewController<AlertViewModel> {
         cancelButton.configuration = configuration
         cancelButton.configuration?.title = "취소"
         acceptButton.configuration = configuration
-        acceptButton.configuration?.title = "시작하기"
+        acceptButton.configuration?.title = "변경하기"
     }
 }

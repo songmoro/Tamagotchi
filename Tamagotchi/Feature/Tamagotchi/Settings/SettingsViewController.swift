@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class SettingsViewController: TamagochiViewController<SettingsViewModel> {
+final class SettingsViewController: ViewController<SettingsViewModel> {
     private let mainViewModel: MainViewModel
     private let tableView = UITableView()
     

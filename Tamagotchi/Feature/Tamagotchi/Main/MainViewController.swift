@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class MainViewController: TamagochiViewController<MainViewModel> {
+final class MainViewController: ViewController<MainViewModel> {
     private let bubbleImageView = UIImageView(image: .bubble)
     private let bubbleLabel = UILabel()
     private let tamagotchiView = TamagochiView()

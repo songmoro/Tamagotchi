@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class NicknameViewController: TamagochiViewController<NicknameViewModel> {
+final class NicknameViewController: ViewController<NicknameViewModel> {
     private let mainViewModel: MainViewModel
     private let nicknameTextField = UnderlineTextField()
     
