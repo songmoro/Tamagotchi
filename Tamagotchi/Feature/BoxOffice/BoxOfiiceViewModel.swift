@@ -34,7 +34,6 @@ final class BoxOfiiceViewModel: ViewModel {
         date
             .do(onNext: { _ in movies.accept("영화를 불러오는 중 입니다...") })
             .flatMap(BoxOfficeObservable.movie)
-            .debug()
             .bind {
                 switch $0 {
                 case .success(let result):
