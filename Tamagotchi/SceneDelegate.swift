@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let tabBarController = UITabBarController()
         let navigationController = UINavigationController()
-        tabBarController.viewControllers = [navigationController, UIViewController(), UIViewController()]
+        tabBarController.viewControllers = [navigationController, LotteryViewController(viewModel: .init()), UIViewController()]
         
         if let items = tabBarController.tabBar.items {
             items[0].title = "다마고치"
