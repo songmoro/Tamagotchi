@@ -19,13 +19,22 @@ final class LotteryViewModel: ViewModel {
     }
     struct Output {
         let lotto: Driver<String>
+        let alert: Driver<String>
+        let toast: Driver<String>
     }
     
     func transform(_ input: Input) -> Output {
+        let network = BehaviorRelay<NetworkStatusType>(value: .connect)
         let no = PublishRelay<Int?>()
         let response = PublishRelay<Lotto>()
         let errorRelay = PublishRelay<Error>()
         let lotto = PublishRelay<String>()
+        let alert = PublishRelay<String>()
+        let toast = PublishRelay<String>()
+        
+        NetworkStatus.shared.statusObservable
+            .bind(to: network)
+            .disposed(by: disposeBag)
         
         input.click
             .withLatestFrom(input.text)
@@ -34,12 +43,13 @@ final class LotteryViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         no
-            .withLatestFrom(NetworkStatus.shared.statusObservable) {
+            .withLatestFrom(network) {
                 return ($0, $1)
             }
             .compactMap { (no, network) in
                 guard case .connect = network else {
                     errorRelay.accept(LottoObservable.LottoError.network)
+                    alert.accept(LottoObservable.LottoError.network.errorDescription!)
                     return nil
                 }
                 guard let no else {
@@ -64,6 +74,7 @@ final class LotteryViewModel: ViewModel {
                     response.accept(lotto)
                 case .failure:
                     errorRelay.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다."))
+                    toast.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다.").errorDescription!)
                 }
             }
             .disposed(by: disposeBag)
@@ -82,7 +93,9 @@ final class LotteryViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         return .init(
-            lotto: lotto.asDriver(onErrorJustReturn: "")
+            lotto: lotto.asDriver(onErrorJustReturn: ""),
+            alert: alert.asDriver(onErrorJustReturn: ""),
+            toast: toast.asDriver(onErrorJustReturn: "")
         )
     }
 }

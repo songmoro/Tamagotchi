@@ -20,7 +20,7 @@ final class NetworkStatus {
         observeReachability()
     }
     
-    private let statusSubject = PublishSubject<NetworkStatusType>()
+    private let statusSubject = BehaviorSubject<NetworkStatusType>(value: .connect)
     
     var statusObservable: Observable<NetworkStatusType> {
         statusSubject
