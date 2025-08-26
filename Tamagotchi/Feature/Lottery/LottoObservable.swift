@@ -16,6 +16,7 @@ final class LottoObservable {
         case under
         case over
         case string
+        case network
         
         var errorDescription: String? {
             switch self {
@@ -25,6 +26,8 @@ final class LottoObservable {
                 "로또 회차는 1186회 이하입니다."
             case .string:
                 "로또 회차는 숫자입니다."
+            case .network:
+                "네트워크 연결이 불안정합니다."
             }
         }
     }

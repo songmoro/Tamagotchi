@@ -34,7 +34,14 @@ final class LotteryViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         no
-            .compactMap { no in
+            .withLatestFrom(NetworkStatus.shared.statusObservable) {
+                return ($0, $1)
+            }
+            .compactMap { (no, network) in
+                guard case .connect = network else {
+                    errorRelay.accept(LottoObservable.LottoError.network)
+                    return nil
+                }
                 guard let no else {
                     errorRelay.accept(LottoObservable.LottoError.string)
                     return nil
@@ -55,8 +62,8 @@ final class LotteryViewModel: ViewModel {
                 switch $0 {
                 case .success(let lotto):
                     response.accept(lotto)
-                case .failure(let error):
-                    errorRelay.accept(error)
+                case .failure:
+                    errorRelay.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다."))
                 }
             }
             .disposed(by: disposeBag)
@@ -68,7 +75,9 @@ final class LotteryViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         errorRelay
-            .map { ($0 as? LocalizedError)?.errorDescription ?? "잘못된 요청입니다." }
+            .map {
+                ($0 as? LocalizedError)?.errorDescription ?? "잘못된 요청입니다."
+            }
             .bind(to: lotto)
             .disposed(by: disposeBag)
         
