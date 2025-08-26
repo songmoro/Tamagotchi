@@ -31,6 +31,18 @@ final class BoxOfiiceViewController: ViewController<BoxOfiiceViewModel> {
         output.movies
             .drive(label.rx.text)
             .disposed(by: disposeBag)
+        
+        output.alert
+            .drive(with: self) {
+                $0.showAlert($1)
+            }
+            .disposed(by: disposeBag)
+        
+        output.toast
+            .drive(with: self) {
+                $0.showToast($1)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func configure() {

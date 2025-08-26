@@ -18,6 +18,8 @@ final class BoxOfiiceViewModel: ViewModel {
     }
     struct Output {
         let movies: Driver<String>
+        let alert: Driver<String>
+        let toast: Driver<String>
     }
     
     func transform(_ input: Input) -> Output {
@@ -25,6 +27,8 @@ final class BoxOfiiceViewModel: ViewModel {
         let movies = PublishRelay<String>()
         let response = PublishRelay<BoxOfficeResponse>()
         let errorRelay = PublishRelay<Error>()
+        let alert = PublishRelay<String>()
+        let toast = PublishRelay<String>()
         
         input.click
             .withLatestFrom(input.text)
@@ -33,13 +37,26 @@ final class BoxOfiiceViewModel: ViewModel {
         
         date
             .do(onNext: { _ in movies.accept("영화를 불러오는 중 입니다...") })
+            .withLatestFrom(NetworkStatus.shared.statusSubject) {
+                return ($0, $1)
+            }
+            .compactMap { (date, network) in
+                guard case .connect = network else {
+                    errorRelay.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다."))
+                    alert.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다.").errorDescription!)
+                    return nil
+                }
+                
+                return date
+            }
             .flatMap(BoxOfficeObservable.movie)
             .bind {
                 switch $0 {
                 case .success(let result):
                     response.accept(result)
-                case .failure(let error):
-                    errorRelay.accept(error)
+                case .failure:
+                    errorRelay.accept(LocalizedErrorReason(message: "잘못된 요청입니다."))
+                    toast.accept(LocalizedErrorReason(message: "잘못된 요청입니다.").errorDescription!)
                 }
             }
             .disposed(by: disposeBag)
@@ -57,7 +74,9 @@ final class BoxOfiiceViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         return .init(
-            movies: movies.asDriver(onErrorJustReturn: "")
+            movies: movies.asDriver(onErrorJustReturn: ""),
+            alert: alert.asDriver(onErrorJustReturn: ""),
+            toast: toast.asDriver(onErrorJustReturn: "")
         )
     }
 }

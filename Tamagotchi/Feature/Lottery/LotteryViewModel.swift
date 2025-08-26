@@ -24,7 +24,6 @@ final class LotteryViewModel: ViewModel {
     }
     
     func transform(_ input: Input) -> Output {
-        let network = BehaviorRelay<NetworkStatusType>(value: .connect)
         let no = PublishRelay<Int?>()
         let response = PublishRelay<Lotto>()
         let errorRelay = PublishRelay<Error>()
@@ -32,18 +31,15 @@ final class LotteryViewModel: ViewModel {
         let alert = PublishRelay<String>()
         let toast = PublishRelay<String>()
         
-        NetworkStatus.shared.statusObservable
-            .bind(to: network)
-            .disposed(by: disposeBag)
-        
         input.click
             .withLatestFrom(input.text)
             .map(Int.init)
             .bind(to: no)
             .disposed(by: disposeBag)
         
+        // TODO: 이벤트를 한 번만 방출하는 문제 해결
         no
-            .withLatestFrom(network) {
+            .withLatestFrom(NetworkStatus.shared.statusSubject) {
                 return ($0, $1)
             }
             .compactMap { (no, network) in

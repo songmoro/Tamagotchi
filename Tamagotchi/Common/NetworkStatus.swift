@@ -20,11 +20,7 @@ final class NetworkStatus {
         observeReachability()
     }
     
-    private let statusSubject = BehaviorSubject<NetworkStatusType>(value: .connect)
-    
-    var statusObservable: Observable<NetworkStatusType> {
-        statusSubject
-    }
+    let statusSubject = BehaviorSubject<NetworkStatusType>(value: .connect)
     
     private func observeReachability() {
         NetworkReachabilityManager()?.startListening { [weak statusSubject] status in
