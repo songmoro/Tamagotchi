@@ -12,7 +12,24 @@ import RxSwift
 final class LottoObservable {
     private init() { }
     
-    static func lottery(no: Int) -> Observable<Lotto> {
+    enum LottoError: LocalizedError {
+        case under
+        case over
+        case string
+        
+        var errorDescription: String? {
+            switch self {
+            case .under:
+                "로또 회차는 1회 이상입니다."
+            case .over:
+                "로또 회차는 1186회 이하입니다."
+            case .string:
+                "로또 회차는 숫자입니다."
+            }
+        }
+    }
+    
+    static func lottery(no: Int) -> Observable<Result<Lotto, Error>> {
         return Observable.create { observer in
             guard let url = URL(string: "https://www.dhlottery.co.kr/common.do?method=getLottoNumber&drwNo=\(no)") else {
                 return Disposables.create()
@@ -22,10 +39,11 @@ final class LottoObservable {
                 .responseDecodable(of: Lotto.self) { response in
                     switch response.result {
                     case .success(let lotto):
-                        observer.onNext(lotto)
+                        observer.onNext(.success(lotto))
                         observer.onCompleted()
                     case .failure(let error):
-                        print(error)
+                        observer.onNext(.failure(error))
+                        observer.onCompleted()
                     }
                 }
             
