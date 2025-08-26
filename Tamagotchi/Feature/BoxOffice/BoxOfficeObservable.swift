@@ -46,6 +46,7 @@ final class BoxOfficeObservable {
                         observer.onCompleted()
                     case .failure(let error):
                         observer.onNext(.failure(error))
+                        observer.onCompleted()
                     }
                 }
             
