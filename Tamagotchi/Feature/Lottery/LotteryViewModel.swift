@@ -39,11 +39,8 @@ final class LotteryViewModel: ViewModel {
         
         // TODO: 이벤트를 한 번만 방출하는 문제 해결
         no
-            .withLatestFrom(NetworkStatus.shared.statusSubject) {
-                return ($0, $1)
-            }
-            .compactMap { (no, network) in
-                guard case .connect = network else {
+            .compactMap { no in
+                guard NetworkMonitor.shared.isConnected else {
                     errorRelay.accept(LottoObservable.LottoError.network)
                     alert.accept(LottoObservable.LottoError.network.errorDescription!)
                     return nil

@@ -37,11 +37,8 @@ final class BoxOfiiceViewModel: ViewModel {
         
         date
             .do(onNext: { _ in movies.accept("영화를 불러오는 중 입니다...") })
-            .withLatestFrom(NetworkStatus.shared.statusSubject) {
-                return ($0, $1)
-            }
-            .compactMap { (date, network) in
-                guard case .connect = network else {
+            .compactMap { date in
+                guard NetworkMonitor.shared.isConnected else {
                     errorRelay.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다."))
                     alert.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다.").errorDescription!)
                     return nil
