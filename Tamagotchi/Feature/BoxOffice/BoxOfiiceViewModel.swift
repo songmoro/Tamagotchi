@@ -6,8 +6,16 @@
 //
 
 import Foundation
+import Alamofire
 import RxSwift
 import RxCocoa
+
+enum Loadable<Data, Result, Error> {
+    case notLoaded
+    case isLoading(Data)
+    case loaded(Result)
+    case failed(Error)
+}
 
 final class BoxOfiiceViewModel: ViewModel {
     private let disposeBag = DisposeBag()
@@ -25,10 +33,9 @@ final class BoxOfiiceViewModel: ViewModel {
     func transform(_ input: Input) -> Output {
         let date = PublishRelay<String>()
         let movies = PublishRelay<String>()
-        let response = PublishRelay<BoxOfficeResponse>()
-        let errorRelay = PublishRelay<Error>()
         let alert = PublishRelay<String>()
         let toast = PublishRelay<String>()
+        let loadableResponse = PublishRelay<Loadable<String, BoxOfficeResponse, Error>>()
         
         input.click
             .withLatestFrom(input.text)
@@ -36,38 +43,59 @@ final class BoxOfiiceViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         date
-            .do(onNext: { _ in movies.accept("영화를 불러오는 중 입니다...") })
-            .compactMap { date in
-                guard NetworkMonitor.shared.isConnected else {
-                    errorRelay.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다."))
-                    alert.accept(LocalizedErrorReason(message: "네트워크 요청에 실패했습니다.").errorDescription!)
-                    return nil
-                }
-                
-                return date
-            }
-            .flatMap(BoxOfficeObservable.movie)
             .bind {
-                switch $0 {
-                case .success(let result):
-                    response.accept(result)
-                case .failure:
-                    errorRelay.accept(LocalizedErrorReason(message: "잘못된 요청입니다."))
-                    toast.accept(LocalizedErrorReason(message: "잘못된 요청입니다.").errorDescription!)
-                }
+                loadableResponse.accept(.isLoading($0))
             }
             .disposed(by: disposeBag)
         
-        response
-            .map(\.boxOfficeResult.dailyBoxOfficeList)
-            .map { $0.map(\.movieNm) }
-            .map { $0.joined(separator: "\n") }
-            .bind(to: movies)
-            .disposed(by: disposeBag)
-        
-        errorRelay
-            .map { ($0 as? LocalizedError)?.errorDescription ?? "잘못된 요청입니다." }
-            .bind(to: movies)
+        // TODO: 중복 요청 시도
+        loadableResponse
+            .bind { loadable in
+                switch loadable {
+                case .notLoaded:
+                    movies.accept("영화 제목1\n영화 제목2")
+                case .isLoading(let date):
+                    movies.accept("영화를 불러오는 중 입니다...")
+                    
+                    Task {
+                        guard NetworkMonitor.shared.isConnected else {
+                            throw LocalizedErrorReason(message: "네트워크 요청에 실패했습니다.")
+                        }
+                        
+                        let url = URL(string: "https://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json")!
+                        let parameters = BoxOfficeParameters(key: Secret.boxOfficeApiKey, targetDt: date)
+                        
+                        do {
+                            let response = try await AF.request(url, parameters: parameters).serializingDecodable(BoxOfficeResponse.self).value
+                            loadableResponse.accept(.loaded(response))
+                        }
+                        catch {
+                            loadableResponse.accept(.failed(error))
+                        }
+                    }
+                    
+                case .loaded(let response):
+                    let result = response.boxOfficeResult.dailyBoxOfficeList
+                        .map(\.movieNm)
+                        .joined(separator: ", ")
+                    
+                    movies.accept(result)
+                case .failed(let error):
+                    if let error = error as? LocalizedError, let message = error.errorDescription {
+                        if error is BoxOfficeObservable.ErrorReason {
+                            alert.accept(message)
+                        }
+                        else if error is LocalizedErrorReason {
+                            toast.accept(message)
+                        }
+                        
+                        movies.accept(message)
+                    }
+                    else {
+                        movies.accept("잘못된 요청입니다.")
+                    }
+                }
+            }
             .disposed(by: disposeBag)
         
         return .init(
