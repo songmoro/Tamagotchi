@@ -84,8 +84,6 @@ final class MainViewController: ViewController<MainViewModel> {
             .drive(with: self) {
                 _ = $1
                 $0.delegate?.settings()
-//                let settingsVC = SettingsViewController(viewModel: .init(), mainViewModel: $0.viewModel)
-//                $0.navigationController?.pushViewController(settingsVC, animated: true)
             }
             .disposed(by: disposeBag)
     }

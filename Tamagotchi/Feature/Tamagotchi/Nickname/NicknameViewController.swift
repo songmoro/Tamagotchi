@@ -39,8 +39,6 @@ final class NicknameViewController: ViewController<NicknameViewModel> {
         output.dismiss
             .drive(with: self) { owner, _ in
                 owner.delegate?.finish()
-//                owner.mainViewModel.share.nickname.accept(nickname)
-//                owner.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }

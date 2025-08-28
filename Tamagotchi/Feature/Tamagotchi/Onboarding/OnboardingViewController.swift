@@ -19,7 +19,7 @@ final class OnboardingViewController: UIViewController {
         
         view.backgroundColor = .label
         
-        if Container.shared.account == nil {
+        if Container.shared.account.value == nil {
             delegate?.choice()
         }
         else {

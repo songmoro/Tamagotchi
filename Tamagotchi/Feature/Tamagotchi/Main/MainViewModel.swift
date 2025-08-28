@@ -75,9 +75,6 @@ final class MainViewModel: ViewModel {
             .bind(to: account)
             .disposed(by: disposeBag)
         
-//        newAccount
-//            .bind
-        
         return .init(
             account: account.compactMap(\.self).asDriver(onErrorJustReturn: .init(tamagotchi: .cactus)),
             bubble: bubble.asDriver()
