@@ -1,14 +1,14 @@
 //
-//  Tamagochi.swift
-//  Tamagochi
+//  Tamagotchi.swift
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/22/25.
 //
 
 import UIKit
 
-enum Tamagochi: Int, Codable, CaseIterable {
-    static var allCases: [Tamagochi] = [
+enum Tamagotchi: Int, Codable, CaseIterable {
+    static var allCases: [Tamagotchi] = [
         .cactus, .sun, .starfish,
         .preparing, .preparing, .preparing, .preparing, .preparing,
         .preparing, .preparing, .preparing, .preparing, .preparing,

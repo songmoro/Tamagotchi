@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/22/25.
 //
@@ -15,24 +15,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         window?.overrideUserInterfaceStyle = .light
         
-        let tabBarController = UITabBarController()
-        let navigationController = UINavigationController()
-        tabBarController.viewControllers = [navigationController, LotteryViewController(viewModel: .init()), BoxOfiiceViewController(viewModel: .init())]
-        
-        if let items = tabBarController.tabBar.items {
-            items[0].title = "다마고치"
-            items[1].title = "로또"
-            items[2].title = "검색"
-        }
-        
-        if let data = UserDefaults.standard.data(forKey: "tamagotchi"), let character = try? PropertyListDecoder().decode(TamagochiCharacter.self, from: data), let nickname = UserDefaults.standard.string(forKey: "nickname") {
-            let mainVC = MainViewController(viewModel: MainViewModel(nickname: nickname, character: character))
-            navigationController.viewControllers = [mainVC]
-        }
-        else {
-            let choiveVC = ChoiceViewController(viewModel: ChoiceViewModel())
-            navigationController.viewControllers = [choiveVC]
-        }
+        let coordinator = AppCoordinator(navigationController: UINavigationController())
+        let tabBarController = coordinator.setTabBarController()
+        coordinator.start()
         
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()

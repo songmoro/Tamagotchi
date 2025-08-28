@@ -1,6 +1,6 @@
 //
 //  SettingsViewController.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/24/25.
 //
@@ -11,18 +11,9 @@ import RxSwift
 import RxCocoa
 
 final class SettingsViewController: ViewController<SettingsViewModel> {
-    private let mainViewModel: MainViewModel
+    var delegate: SettingsViewControllerDelegate?
+    
     private let tableView = UITableView()
-    
-    init(viewModel: SettingsViewModel, mainViewModel: MainViewModel) {
-        self.mainViewModel = mainViewModel
-        super.init(viewModel: viewModel)
-    }
-    
-    @available(*, deprecated)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +24,6 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     private func bind() {
         let output = viewModel.transform(
             input: .init(
-                nickname: mainViewModel.share.nickname.asObservable(),
                 row: tableView.rx.itemSelected.map(\.row).asObservable()
             )
         )
@@ -52,35 +42,23 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
             }
             .disposed(by: disposeBag)
         
-        output.change
+        output.nickname
             .drive(with: self) { owner, _ in
-                let vc = NicknameViewController(viewModel: .init(), mainViewModel: owner.mainViewModel)
-                owner.navigationController?.pushViewController(vc, animated: true)
+                owner.delegate?.nickname()
             }
             .disposed(by: disposeBag)
         
-        output.choice
-            .drive(with: self) { owner, _ in
-                let vc = ChoiceViewController(mainViewModel: owner.mainViewModel)
-                owner.navigationController?.pushViewController(vc, animated: true)
+        output.change
+            .drive(with: self) { owner, tamagotchi in
+                owner.delegate?.change(tamagotchi: tamagotchi)
             }
             .disposed(by: disposeBag)
         
         output.reset
             .drive(with: self) { owner, _ in
-                let alert = UIAlertController(title: "데이터 초기화", message: "정말 다시 처음부터 시작하실 건가용?", preferredStyle: .alert)
-                alert.addAction(.init(title: "아냐!", style: .cancel))
-                alert.addAction(.init(title: "웅", style: .destructive, handler: { _ in
-                    UserDefaults.standard.set(nil, forKey: "tamagotchi")
-                    
-                    let vc = ChoiceViewController(viewModel: .init())
-                    
-                    guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
-                    guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
-                    navC.viewControllers = [vc]
-                }))
-                
-                owner.present(alert, animated: true)
+                owner.delegate?.reset {
+                    Container.shared.update(nil)
+                }
             }
             .disposed(by: disposeBag)
     }

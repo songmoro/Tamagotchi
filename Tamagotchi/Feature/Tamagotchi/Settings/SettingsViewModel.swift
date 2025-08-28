@@ -1,6 +1,6 @@
 //
 //  SettingsViewModel.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/24/25.
 //
@@ -13,28 +13,29 @@ final class SettingsViewModel: ViewModel {
     private let disposeBag = DisposeBag()
     
     struct Input {
-        let nickname: Observable<String>
         let row: Observable<Int>
     }
     struct Output {
         let settings: Driver<[Settings]>
-        let change: Driver<Void>
-        let choice: Driver<Void>
+        let nickname: Driver<Void>
+        let change: Driver<Tamagotchi>
         let reset: Driver<Void>
     }
     
     func transform(input: Input) -> Output {
         let rowAction = PublishRelay<Int>()
         let settings = BehaviorRelay<[Settings]>(value: [])
-        let change = PublishRelay<Void>()
-        let choice = PublishRelay<Void>()
+        let account = BehaviorRelay<Account?>(value: Container.shared.account)
+        let nickname = PublishRelay<Void>()
+        let change = PublishRelay<Tamagotchi>()
         let reset = PublishRelay<Void>()
         
         input.row
             .bind(to: rowAction)
             .disposed(by: disposeBag)
         
-        input.nickname
+        account
+            .compactMap(\.?.nickname)
             .map { nickname -> [Settings] in
                 Settings.makeSettings(nickname)
             }
@@ -44,10 +45,11 @@ final class SettingsViewModel: ViewModel {
         rowAction
             .bind {
                 if $0 == 0 {
-                    change.accept(())
+                    nickname.accept(())
                 }
                 else if $0 == 1 {
-                    choice.accept(())
+                    guard let tamagotchi = account.value?.tamagotchi else { return }
+                    change.accept(tamagotchi)
                 }
                 else if $0 == 2 {
                     reset.accept(())
@@ -57,8 +59,8 @@ final class SettingsViewModel: ViewModel {
         
         return .init(
             settings: settings.asDriver(onErrorJustReturn: []),
-            change: change.asDriver(onErrorJustReturn: ()),
-            choice: choice.asDriver(onErrorJustReturn: ()),
+            nickname: nickname.asDriver(onErrorJustReturn: ()),
+            change: change.asDriver(onErrorJustReturn: .cactus),
             reset: reset.asDriver(onErrorJustReturn: ())
         )
     }

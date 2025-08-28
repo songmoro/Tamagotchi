@@ -1,6 +1,6 @@
 //
 //  ChangeAlertViewModel.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/23/25.
 //
@@ -17,37 +17,31 @@ final class ChangeAlertViewModel: ViewModel {
     }
     struct Output {
         let dismiss: Driver<Void>
-        let change: Driver<TamagochiCharacter>
-    }
-    
-    let tamagotchi: Tamagochi
-    
-    init(tamagotchi: Tamagochi) {
-        self.tamagotchi = tamagotchi
+        let change: Driver<Tamagotchi>
     }
     
     func transform(_ input: Input) -> Output {
         let dismiss = PublishSubject<Void>()
         let acceptTap = input.acceptTap.share()
-        let change = PublishSubject<TamagochiCharacter>()
+        let change = BehaviorRelay(value: Container.shared.account?.tamagotchi)
         
         Observable.merge(input.cancelTap, acceptTap)
             .bind(to: dismiss)
             .disposed(by: disposeBag)
         
         acceptTap
-            .withUnretained(self)
-            .compactMap { (owner, _) -> TamagochiCharacter? in
-                let tamagotchi = owner.tamagotchi
-                
-                return TamagochiCharacter(tamagotchi: tamagotchi)
-            }
+            .withLatestFrom(change)
+//            .compactMap { (owner, account) -> Account? in
+//                let tamagotchi = account. .tamagotchi
+//                
+//                return Account(tamagotchi: tamagotchi)
+//            }
             .bind(to: change)
             .disposed(by: disposeBag)
         
         return .init(
             dismiss: dismiss.asDriver(onErrorJustReturn: ()),
-            change: change.asDriver(onErrorJustReturn: .init(tamagotchi: .preparing))
+            change: change.compactMap(\.self).asDriver(onErrorJustReturn: .cactus)
         )
     }
 }

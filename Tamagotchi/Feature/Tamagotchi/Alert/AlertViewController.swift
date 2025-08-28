@@ -1,6 +1,6 @@
 //
 //  AlertViewController.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/22/25.
 //
@@ -11,6 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class AlertViewController: ViewController<AlertViewModel> {
+    var delegate: AlertViewControllerDelegate?
+    
     private let contentView = UIView()
     private let tamagotchiView = TamagochiView()
     private let descriptionLabel = UILabel()
@@ -40,21 +42,20 @@ final class AlertViewController: ViewController<AlertViewModel> {
             )
         )
         
+        output.isChange
+            .drive(acceptButton.rx.title())
+            .disposed(by: disposeBag)
+        
         output.dismiss
             .drive(with: self) {
                 _ = $1
-                $0.dismiss(animated: false)
+                $0.delegate?.finish()
             }
             .disposed(by: disposeBag)
         
         output.start
-            .drive(with: self) { owner, character in
-                let vc = MainViewController(viewModel: .init(character: character))
-                owner.dismiss(animated: false)
-                
-                guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
-                guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
-                navC.viewControllers = [vc]
+            .drive(with: self) { owner, _ in
+                owner.delegate?.choice()
             }
             .disposed(by: disposeBag)
     }
@@ -123,6 +124,5 @@ final class AlertViewController: ViewController<AlertViewModel> {
         cancelButton.configuration = configuration
         cancelButton.configuration?.title = "취소"
         acceptButton.configuration = configuration
-        acceptButton.configuration?.title = "시작하기"
     }
 }

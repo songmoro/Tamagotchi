@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/22/25.
 //

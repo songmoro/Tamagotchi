@@ -1,6 +1,6 @@
 //
 //  MainViewController.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/23/25.
 //
@@ -11,6 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class MainViewController: ViewController<MainViewModel> {
+    var delegate: MainViewControllerDelegate?
+    
     private let bubbleImageView = UIImageView(image: .bubble)
     private let bubbleLabel = UILabel()
     private let tamagotchiView = TamagochiView()
@@ -44,19 +46,18 @@ final class MainViewController: ViewController<MainViewModel> {
             )
         )
         
-        let character = output.character
-        
-        Observable.combineLatest(output.bubble.asObservable(), output.nickname.asObservable())
-            .map(+)
+        Observable.combineLatest(output.bubble.asObservable(), output.account.asObservable())
+            .map { $0 + $1.nickname }
             .bind(to: bubbleLabel.rx.text)
             .disposed(by: disposeBag)
         
-        output.nickname
+        output.account
+            .map(\.nickname)
             .map { "\($0)님의 다마고치" }
             .drive(navigationItem.rx.title)
             .disposed(by: disposeBag)
         
-        character
+        output.account
             .map {
                 "LV\($0.level) • 밥알 \($0.food)개 • 물방울 \($0.water)개"
             }
@@ -66,12 +67,12 @@ final class MainViewController: ViewController<MainViewModel> {
             }
             .disposed(by: disposeBag)
         
-        character
+        output.account
             .map { UIImage(named: $0.imageName) }
             .drive(tamagotchiView.imageView.rx.image)
             .disposed(by: disposeBag)
         
-        character
+        output.account
             .map(\.tamagotchi.name)
             .drive(with: self) {
                 $0.tamagotchiView.setTitle($1)
@@ -82,8 +83,9 @@ final class MainViewController: ViewController<MainViewModel> {
             .asDriver()
             .drive(with: self) {
                 _ = $1
-                let settingsVC = SettingsViewController(viewModel: .init(), mainViewModel: $0.viewModel)
-                $0.navigationController?.pushViewController(settingsVC, animated: true)
+                $0.delegate?.settings()
+//                let settingsVC = SettingsViewController(viewModel: .init(), mainViewModel: $0.viewModel)
+//                $0.navigationController?.pushViewController(settingsVC, animated: true)
             }
             .disposed(by: disposeBag)
     }

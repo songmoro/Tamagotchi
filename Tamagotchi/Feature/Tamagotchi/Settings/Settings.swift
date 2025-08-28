@@ -1,6 +1,6 @@
 //
 //  Settings.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/24/25.
 //

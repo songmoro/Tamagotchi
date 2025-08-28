@@ -1,10 +1,11 @@
 //
 //  AlertViewModel.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/23/25.
 //
 
+import Foundation
 import RxSwift
 import RxCocoa
 
@@ -16,38 +17,40 @@ final class AlertViewModel: ViewModel {
         let acceptTap: Observable<Void>
     }
     struct Output {
+        let isChange: Driver<String>
         let dismiss: Driver<Void>
-        let start: Driver<TamagochiCharacter>
+        let start: Driver<Void>
     }
     
-    let tamagotchi: Tamagochi
+    let tamagotchi: Tamagotchi
     
-    init(tamagotchi: Tamagochi) {
+    init(tamagotchi: Tamagotchi) {
         self.tamagotchi = tamagotchi
     }
     
     func transform(_ input: Input) -> Output {
+        let isChange = Observable.just(Container.shared.account != nil)
+            .map { $0 ? "변경하기" : "시작하기" }
         let dismiss = PublishSubject<Void>()
         let acceptTap = input.acceptTap.share()
-        let start = PublishSubject<TamagochiCharacter>()
+        let start = PublishSubject<Void>()
         
         Observable.merge(input.cancelTap, acceptTap)
             .bind(to: dismiss)
             .disposed(by: disposeBag)
         
         acceptTap
-            .withUnretained(self)
-            .compactMap { (owner, _) -> TamagochiCharacter? in
-                let tamagotchi = owner.tamagotchi
-                
-                return TamagochiCharacter(tamagotchi: tamagotchi)
-            }
+            .do(onNext: { [tamagotchi] in
+                let account = Account(tamagotchi: tamagotchi)
+                Container.shared.update(account)
+            })
             .bind(to: start)
             .disposed(by: disposeBag)
         
         return .init(
+            isChange: isChange.asDriver(onErrorJustReturn: "시작하기"),
             dismiss: dismiss.asDriver(onErrorJustReturn: ()),
-            start: start.asDriver(onErrorJustReturn: .init(tamagotchi: .preparing))
+            start: start.asDriver(onErrorJustReturn: ())
         )
     }
 }

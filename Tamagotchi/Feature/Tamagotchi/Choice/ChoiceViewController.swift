@@ -1,6 +1,6 @@
 //
 //  ChoiceViewController.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/22/25.
 //
@@ -11,6 +11,8 @@ import RxSwift
 import RxCocoa
 
 final class ChoiceViewController: ViewController<ChoiceViewModel> {
+    var delegate: ChoiceViewControllerDelegate?
+    
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
     private let mainViewModel: MainViewModel?
     
@@ -59,25 +61,13 @@ final class ChoiceViewController: ViewController<ChoiceViewModel> {
                 $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
             }
             .disposed(by: disposeBag)
-        
-        if let mainViewModel {
-            collectionView.rx.modelSelected(Tamagochi.self)
-                .asDriver()
-                .drive(with: self) { owner, tamagotchi in
-                    let alert = ChangeAlertViewController(viewModel: .init(tamagotchi: tamagotchi), mainViewModel: mainViewModel)
-                    owner.present(alert, animated: false)
-                }
-                .disposed(by: disposeBag)
-        }
-        else {
-            collectionView.rx.modelSelected(Tamagochi.self)
-                .asDriver()
-                .drive(with: self) { owner, tamagotchi in
-                    let alert = AlertViewController(viewModel: .init(tamagotchi: tamagotchi))
-                    owner.present(alert, animated: false)
-                }
-                .disposed(by: disposeBag)
-        }
+
+        collectionView.rx.modelSelected(Tamagotchi.self)
+            .asDriver()
+            .drive(with: self) { owner, tamagotchi in
+                owner.delegate?.alert(tamagotchi: tamagotchi)
+            }
+            .disposed(by: disposeBag)
     }
     
     private func layout() -> UICollectionViewFlowLayout {

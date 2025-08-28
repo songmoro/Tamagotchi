@@ -1,0 +1,39 @@
+//
+//  NicknameCoordinator.swift
+//  Tamagotchi
+//
+//  Created by 송재훈 on 8/28/25.
+//
+
+import UIKit
+
+protocol NicknameCoordinatorDelegate {
+    func finish(_ coordinator: NicknameCoordinator)
+}
+
+protocol NicknameViewControllerDelegate {
+    func finish()
+}
+
+final class NicknameCoordinator: Coordinator, NicknameViewControllerDelegate {
+    var delegate: NicknameCoordinatorDelegate?
+    
+    let navigationController: UINavigationController
+    var childCoordinators: [Coordinator] = []
+    
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+    
+    func start() {
+        let vm = NicknameViewModel()
+        let vc = NicknameViewController(viewModel: vm)
+        
+        vc.delegate = self
+        navigationController.pushViewController(vc, animated: true)
+    }
+    
+    func finish() {
+        delegate?.finish(self)
+    }
+}

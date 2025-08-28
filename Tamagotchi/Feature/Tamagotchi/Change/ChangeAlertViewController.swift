@@ -1,6 +1,6 @@
 //
 //  ChangeAlertViewController.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/22/25.
 //
@@ -11,15 +11,15 @@ import RxSwift
 import RxCocoa
 
 final class ChangeAlertViewController: ViewController<ChangeAlertViewModel> {
-    private let mainViewModel: MainViewModel
+    var delegate: ChangeAlertViewControllerDelegate?
+    
     private let contentView = UIView()
     private let tamagotchiView = TamagochiView()
     private let descriptionLabel = UILabel()
     private let cancelButton = UIButton()
     private let acceptButton = UIButton()
     
-    init(viewModel: ChangeAlertViewModel, mainViewModel: MainViewModel) {
-        self.mainViewModel = mainViewModel
+    override init(viewModel: ChangeAlertViewModel) {
         super.init(viewModel: viewModel)
         modalPresentationStyle = .overCurrentContext
     }
@@ -49,22 +49,22 @@ final class ChangeAlertViewController: ViewController<ChangeAlertViewModel> {
             }
             .disposed(by: disposeBag)
         
-        output.change
-            .withLatestFrom(mainViewModel.share.character.asDriver(), resultSelector: {
-                var newCharacter = $1
-                newCharacter.tamagotchi = $0.tamagotchi
-                
-                return newCharacter
-            })
-            .drive(with: self) { owner, character in
-                owner.mainViewModel.share.character.accept(character)
-                owner.dismiss(animated: false)
-                
-                guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
-                guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
-                navC.popToRootViewController(animated: true)
-            }
-            .disposed(by: disposeBag)
+//        output.change
+//            .withLatestFrom(mainViewModel.share.character.asDriver(), resultSelector: {
+//                var newCharacter = $1
+//                newCharacter.tamagotchi = $0.tamagotchi
+//                
+//                return newCharacter
+//            })
+//            .drive(with: self) { owner, character in
+//                owner.mainViewModel.share.character.accept(character)
+//                owner.dismiss(animated: false)
+//                
+//                guard let tabC = (owner.view.window?.rootViewController as? UITabBarController) else { return }
+//                guard let navC = (tabC.viewControllers?.first as? UINavigationController) else { return }
+//                navC.popToRootViewController(animated: true)
+//            }
+//            .disposed(by: disposeBag)
     }
     
     private func configure() {
@@ -108,29 +108,29 @@ final class ChangeAlertViewController: ViewController<ChangeAlertViewModel> {
             $0.height.equalTo(60)
         }
         
-        contentView.layer.cornerRadius = 20
-        contentView.clipsToBounds = true
-        contentView.backgroundColor = .background
-        
-        tamagotchiView.imageView.image = UIImage(named: viewModel.tamagotchi.imageName(level: 6))
-        tamagotchiView.setTitle(viewModel.tamagotchi.name)
-        underlineView.backgroundColor = .tint
-        
-        descriptionLabel.text = viewModel.tamagotchi.profile
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.textAlignment = .center
-        descriptionLabel.textColor = .tint
-        descriptionLabel.font = .systemFont(ofSize: 13)
-        
-        var configuration = UIButton.Configuration.borderless()
-        configuration.background.backgroundColor = .background
-        configuration.background.strokeColor = .opaqueSeparator
-        configuration.background.strokeWidth = 1
-        configuration.background.cornerRadius = 0
-        
-        cancelButton.configuration = configuration
-        cancelButton.configuration?.title = "취소"
-        acceptButton.configuration = configuration
-        acceptButton.configuration?.title = "변경하기"
+//        contentView.layer.cornerRadius = 20
+//        contentView.clipsToBounds = true
+//        contentView.backgroundColor = .background
+//        
+//        tamagotchiView.imageView.image = UIImage(named: viewModel .tamagotchi.imageName(level: 6))
+//        tamagotchiView.setTitle(viewModel.tamagotchi.name)
+//        underlineView.backgroundColor = .tint
+//        
+//        descriptionLabel.text = viewModel.tamagotchi.profile
+//        descriptionLabel.numberOfLines = 0
+//        descriptionLabel.textAlignment = .center
+//        descriptionLabel.textColor = .tint
+//        descriptionLabel.font = .systemFont(ofSize: 13)
+//        
+//        var configuration = UIButton.Configuration.borderless()
+//        configuration.background.backgroundColor = .background
+//        configuration.background.strokeColor = .opaqueSeparator
+//        configuration.background.strokeWidth = 1
+//        configuration.background.cornerRadius = 0
+//        
+//        cancelButton.configuration = configuration
+//        cancelButton.configuration?.title = "취소"
+//        acceptButton.configuration = configuration
+//        acceptButton.configuration?.title = "변경하기"
     }
 }

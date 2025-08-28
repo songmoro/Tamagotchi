@@ -1,6 +1,6 @@
 //
 //  NicknameViewController.swift
-//  Tamagochi
+//  Tamagotchi
 //
 //  Created by 송재훈 on 8/24/25.
 //
@@ -11,18 +11,9 @@ import RxSwift
 import RxCocoa
 
 final class NicknameViewController: ViewController<NicknameViewModel> {
-    private let mainViewModel: MainViewModel
+    var delegate: NicknameViewControllerDelegate?
+    
     private let nicknameTextField = UnderlineTextField()
-    
-    init(viewModel: NicknameViewModel, mainViewModel: MainViewModel) {
-        self.mainViewModel = mainViewModel
-        super.init(viewModel: viewModel)
-    }
-    
-    @available(*, deprecated)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,10 +31,16 @@ final class NicknameViewController: ViewController<NicknameViewModel> {
             )
         )
         
+        output.account
+            .map(\.nickname)
+            .drive(nicknameTextField.rx.placeholder)
+            .disposed(by: disposeBag)
+        
         output.dismiss
-            .drive(with: self) { owner, nickname in
-                owner.mainViewModel.share.nickname.accept(nickname)
-                owner.navigationController?.popViewController(animated: true)
+            .drive(with: self) { owner, _ in
+                owner.delegate?.finish()
+//                owner.mainViewModel.share.nickname.accept(nickname)
+//                owner.navigationController?.popViewController(animated: true)
             }
             .disposed(by: disposeBag)
     }
@@ -57,7 +54,5 @@ final class NicknameViewController: ViewController<NicknameViewModel> {
         nicknameTextField.snp.makeConstraints {
             $0.top.horizontalEdges.equalToSuperview(\.safeAreaLayoutGuide).inset(20)
         }
-        
-        nicknameTextField.placeholder = mainViewModel.share.nickname.value
     }
 }
