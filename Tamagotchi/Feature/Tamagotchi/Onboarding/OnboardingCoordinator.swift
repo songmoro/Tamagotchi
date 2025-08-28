@@ -1,0 +1,43 @@
+//
+//  OnboardingCoordinator.swift
+//  Tamagotchi
+//
+//  Created by 송재훈 on 8/28/25.
+//
+
+import UIKit
+
+protocol OnboardingCoordinatorDelegate {
+    func choice(_ coordinator: OnboardingCoordinator)
+    func main(_ coordinator: OnboardingCoordinator)
+}
+protocol OnboardingViewControllerDelegate {
+    func choice()
+    func main()
+}
+
+final class OnboardingCoordinator: Coordinator, OnboardingViewControllerDelegate {
+    var delegate: OnboardingCoordinatorDelegate?
+    
+    let navigationController: UINavigationController
+    var childCoordinators: [Coordinator] = []
+    
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+    
+    func start() {
+        let vc = OnboardingViewController()
+        vc.delegate = self
+        
+        navigationController.pushViewController(vc, animated: false)
+    }
+    
+    func choice() {
+        delegate?.choice(self)
+    }
+    
+    func main() {
+        delegate?.main(self)
+    }
+}

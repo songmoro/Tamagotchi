@@ -21,10 +21,7 @@ final class AppCoordinator: Coordinator {
     }
     
     func start() {
-        showChoiceVC()
-//            showMainVC(account: account)
-//        } else {
-//        }
+        showOnboarding()
     }
     
     func setTabBarController() -> UITabBarController {
@@ -40,41 +37,60 @@ final class AppCoordinator: Coordinator {
         return tabBarController
     }
     
+    private func appendChild(_ coordinator: Coordinator) {
+        childCoordinators.append(coordinator)
+    }
+    
     private func removeChild(_ coordinator: Coordinator) {
         childCoordinators = childCoordinators.filter { $0 !== coordinator }
     }
     
+    private func pop() {
+        navigationController.popViewController(animated: true)
+    }
+    
+    private func popToRoot() {
+        navigationController.popToRootViewController(animated: true)
+    }
+    
+    private func showOnboarding() {
+        let coordinator = OnboardingCoordinator(navigationController: navigationController)
+        appendChild(coordinator)
+        coordinator.delegate = self
+        coordinator.start()
+    }
+    
     private func showMainVC() {
         let coordinator = MainCoordinator(navigationController: navigationController)
-        childCoordinators.append(coordinator)
+        appendChild(coordinator)
         coordinator.delegate = self
         coordinator.start()
     }
     
     private func showChoiceVC(tamagotchi: Tamagotchi? = nil) {
         let coordinator = ChoiceCoordinator(navigationController: navigationController)
-        childCoordinators.append(coordinator)
+        appendChild(coordinator)
         coordinator.delegate = self
         coordinator.start(tamagotchi: tamagotchi)
     }
     
     private func showChoiceAlertVC(tamagotchi: Tamagotchi) {
         let coordinator = AlertCoordinator(navigationController: navigationController)
-        childCoordinators.append(coordinator)
+        appendChild(coordinator)
         coordinator.delegate = self
         coordinator.start(tamagotchi: tamagotchi)
     }
     
     private func showSettingsVC() {
         let coordinator = SettingsCoordinator(navigationController: navigationController)
-        childCoordinators.append(coordinator)
+        appendChild(coordinator)
         coordinator.delegate = self
         coordinator.start()
     }
     
     private func showNicknameVC() {
         let coordinator = NicknameCoordinator(navigationController: navigationController)
-        childCoordinators.append(coordinator)
+        appendChild(coordinator)
         coordinator.delegate = self
         coordinator.start()
     }
@@ -90,6 +106,19 @@ final class AppCoordinator: Coordinator {
     }
 }
 
+extension AppCoordinator: OnboardingCoordinatorDelegate {
+    func choice(_ coordinator: OnboardingCoordinator) {
+        removeChild(coordinator)
+        showChoiceVC()
+    }
+    
+    func main(_ coordinator: OnboardingCoordinator) {
+        pop()
+        removeChild(coordinator)
+        showMainVC()
+    }
+}
+
 extension AppCoordinator: ChoiceCoordinatorDelegate {
     func alert(tamagotchi: Tamagotchi) {
         showChoiceAlertVC(tamagotchi: tamagotchi)
@@ -98,6 +127,7 @@ extension AppCoordinator: ChoiceCoordinatorDelegate {
 
 extension AppCoordinator: AlertCoordinatorDelegate {
     func finish(_ coordinator: AlertCoordinator) {
+        popToRoot()
         removeChild(coordinator)
         navigationController.tabBarController?.dismiss(animated: false)
     }
@@ -131,6 +161,6 @@ extension AppCoordinator: SettingsCoordinatorDelegate {
 extension AppCoordinator: NicknameCoordinatorDelegate {
     func finish(_ coordinator: NicknameCoordinator) {
         removeChild(coordinator)
-        navigationController.popToRootViewController(animated: true)
+        popToRoot()
     }
 }
