@@ -7,24 +7,27 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 
 final class Container {
+    private let disposeBag = DisposeBag()
     static let shared = Container()
     
-    private init() { }
+    private(set) var account: BehaviorRelay<Account?>
     
-    private(set) var account: Account? = {
-        guard let data = UserDefaults.standard.data(forKey: "account"),
-        let character = try? PropertyListDecoder().decode(Account.self, from: data) else {
-            return nil
+    private init() {
+        if let data = UserDefaults.standard.data(forKey: "account"), let account = try? PropertyListDecoder().decode(Account.self, from: data) {
+            self.account = BehaviorRelay(value: account)
+        }
+        else {
+            self.account = BehaviorRelay(value: nil)
         }
         
-        return character
-    }()
-    
-    func update(_ account: Account?) {
-        let data = try? PropertyListEncoder().encode(account)
-        UserDefaults.standard.set(data, forKey: "account")
-        self.account = account
+        self.account
+            .bind {
+                let data = try? PropertyListEncoder().encode($0)
+                UserDefaults.standard.set(data, forKey: "account")
+            }
+            .disposed(by: disposeBag)
     }
 }

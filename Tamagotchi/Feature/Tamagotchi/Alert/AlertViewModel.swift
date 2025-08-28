@@ -30,7 +30,7 @@ final class AlertViewModel: ViewModel {
     }
     
     func transform(_ input: Input) -> Output {
-        let isChange = Container.shared.account != nil
+        let isChange = Container.shared.account.value != nil
         let acceptTitle = Observable.just(isChange)
             .map { $0 ? "변경하기" : "시작하기" }
         let dismiss = PublishSubject<Void>()
@@ -44,9 +44,7 @@ final class AlertViewModel: ViewModel {
         
         acceptTap
             .map { [tamagotchi] _ -> Bool in
-                let account = Account(tamagotchi: tamagotchi)
-                Container.shared.update(account)
-                
+                Container.shared.account.accept(Account(tamagotchi: tamagotchi))
                 return isChange
             }
             .bind {

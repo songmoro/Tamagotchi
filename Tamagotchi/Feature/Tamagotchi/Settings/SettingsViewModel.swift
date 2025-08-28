@@ -25,7 +25,7 @@ final class SettingsViewModel: ViewModel {
     func transform(input: Input) -> Output {
         let rowAction = PublishRelay<Int>()
         let settings = BehaviorRelay<[Settings]>(value: [])
-        let account = BehaviorRelay<Account?>(value: Container.shared.account)
+        let account = Container.shared.account
         let nickname = PublishRelay<Void>()
         let change = PublishRelay<Tamagotchi>()
         let reset = PublishRelay<Void>()

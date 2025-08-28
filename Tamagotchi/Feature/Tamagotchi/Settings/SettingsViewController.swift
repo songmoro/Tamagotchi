@@ -57,7 +57,7 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
         output.reset
             .drive(with: self) { owner, _ in
                 owner.delegate?.reset {
-                    Container.shared.update(nil)
+                    Container.shared.account.accept(nil)
                 }
             }
             .disposed(by: disposeBag)

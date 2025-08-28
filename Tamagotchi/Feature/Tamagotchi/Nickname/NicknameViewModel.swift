@@ -23,16 +23,15 @@ final class NicknameViewModel: ViewModel {
     
     func transform(_ input: Input) -> Output {
         let dismiss = PublishRelay<String>()
-        let account = BehaviorRelay<Account?>(value: Container.shared.account)
+        let account = Container.shared.account
         
         input.tap
             .withLatestFrom(input.text)
             .filter { 2...6 ~= $0.count }
             .do(onNext: {
-                guard var account = account.value else { return }
-                account.nickname = $0
-                
-                Container.shared.update(account)
+                guard var newAccount = account.value else { return }
+                newAccount.nickname = $0
+                account.accept(newAccount)
             })
             .bind(to: dismiss)
             .disposed(by: disposeBag)

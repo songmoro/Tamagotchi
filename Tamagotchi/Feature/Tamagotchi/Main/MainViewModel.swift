@@ -30,7 +30,7 @@ final class MainViewModel: ViewModel {
         let foodInt = BehaviorRelay(value: 0)
         let waterInt = BehaviorRelay(value: 0)
         let bubble = BehaviorRelay(value: "좋은 아침")
-        let account = BehaviorRelay(value: Container.shared.account)
+        let account = Container.shared.account
         
         input.bubble
             .map {

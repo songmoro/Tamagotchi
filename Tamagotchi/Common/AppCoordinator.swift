@@ -7,6 +7,9 @@
 
 import UIKit
 
+// TODO: 데이터 변경 시 데이터 갱신
+// TODO: 데이터 초기화 시 선택 화면
+
 protocol Coordinator: AnyObject {
     var navigationController: UINavigationController { get }
     var childCoordinators: [Coordinator] { get set }
