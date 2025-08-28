@@ -20,6 +20,10 @@ protocol SettingsViewControllerDelegate {
 }
 
 final class SettingsCoordinator: Coordinator, SettingsViewControllerDelegate {
+    deinit {
+        print(self, #function)
+    }
+    
     var delegate: SettingsCoordinatorDelegate?
     
     let navigationController: UINavigationController

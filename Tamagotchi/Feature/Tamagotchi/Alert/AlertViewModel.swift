@@ -10,6 +10,10 @@ import RxSwift
 import RxCocoa
 
 final class AlertViewModel: ViewModel {
+    deinit {
+        print(self, #function)
+    }
+    
     private let disposeBag = DisposeBag()
     
     struct Input {

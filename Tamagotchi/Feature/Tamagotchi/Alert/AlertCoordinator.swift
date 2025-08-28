@@ -20,6 +20,10 @@ protocol AlertViewControllerDelegate {
 }
 
 final class AlertCoordinator: Coordinator {
+    deinit {
+        print(self, #function)
+    }
+    
     var delegate: AlertCoordinatorDelegate?
     
     let navigationController: UINavigationController

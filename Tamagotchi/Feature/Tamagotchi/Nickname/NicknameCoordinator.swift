@@ -16,6 +16,10 @@ protocol NicknameViewControllerDelegate {
 }
 
 final class NicknameCoordinator: Coordinator, NicknameViewControllerDelegate {
+    deinit {
+        print(self, #function)
+    }
+    
     var delegate: NicknameCoordinatorDelegate?
     
     let navigationController: UINavigationController

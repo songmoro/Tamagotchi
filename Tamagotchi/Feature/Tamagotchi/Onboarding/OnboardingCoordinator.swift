@@ -17,6 +17,10 @@ protocol OnboardingViewControllerDelegate {
 }
 
 final class OnboardingCoordinator: Coordinator, OnboardingViewControllerDelegate {
+    deinit {
+        print(self, #function)
+    }
+    
     var delegate: OnboardingCoordinatorDelegate?
     
     let navigationController: UINavigationController

@@ -55,6 +55,11 @@ final class AppCoordinator: Coordinator {
         navigationController.popToRootViewController(animated: true)
     }
     
+    private func new() {
+        navigationController.viewControllers = []
+        childCoordinators = []
+    }
+    
     private func showOnboarding() {
         let coordinator = OnboardingCoordinator(navigationController: navigationController)
         appendChild(coordinator)
@@ -104,7 +109,7 @@ final class AppCoordinator: Coordinator {
 
 extension AppCoordinator: OnboardingCoordinatorDelegate {
     func choice(_ coordinator: OnboardingCoordinator) {
-        removeChild(coordinator)
+        new()
         showChoiceVC()
     }
     
@@ -155,6 +160,7 @@ extension AppCoordinator: SettingsCoordinatorDelegate {
     }
     
     func reset() {
+        new()
         showChoiceVC()
     }
 }

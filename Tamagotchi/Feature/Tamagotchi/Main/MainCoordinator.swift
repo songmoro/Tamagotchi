@@ -16,6 +16,10 @@ protocol MainViewControllerDelegate {
 }
 
 final class MainCoordinator: Coordinator, MainViewControllerDelegate {
+    deinit {
+        print(self, #function)
+    }
+    
     var delegate: MainCoordinatorDelegate?
     
     let navigationController: UINavigationController

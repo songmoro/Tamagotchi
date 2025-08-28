@@ -16,6 +16,10 @@ protocol ChoiceViewControllerDelegate {
 }
 
 final class ChoiceCoordinator: Coordinator {
+    deinit {
+        print(self, #function)
+    }
+    
     var delegate: ChoiceCoordinatorDelegate?
     
     let navigationController: UINavigationController
