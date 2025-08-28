@@ -95,12 +95,6 @@ final class AppCoordinator: Coordinator {
         coordinator.start()
     }
     
-    private func showChangeVC(tamagotchi: Tamagotchi) {
-        showChoiceVC(tamagotchi: tamagotchi)
-        //                let vc = ChoiceViewController(mainViewModel: owner.mainViewModel)
-        //                owner.navigationController?.pushViewController(vc, animated: true)
-    }
-    
     private func showResetAlert() {
         
     }
@@ -127,14 +121,19 @@ extension AppCoordinator: ChoiceCoordinatorDelegate {
 
 extension AppCoordinator: AlertCoordinatorDelegate {
     func finish(_ coordinator: AlertCoordinator) {
-        popToRoot()
         removeChild(coordinator)
         navigationController.tabBarController?.dismiss(animated: false)
     }
     
     func choice(_ coordinator: AlertCoordinator) {
-        showMainVC()
         finish(coordinator)
+        pop()
+        showMainVC()
+    }
+    
+    func change(_ coordinator: AlertCoordinator) {
+        finish(coordinator)
+        popToRoot()
     }
 }
 
@@ -150,7 +149,7 @@ extension AppCoordinator: SettingsCoordinatorDelegate {
     }
     
     func change(tamagotchi: Tamagotchi) {
-        showChangeVC(tamagotchi: tamagotchi)
+        showChoiceVC(tamagotchi: tamagotchi)
     }
     
     func reset() {

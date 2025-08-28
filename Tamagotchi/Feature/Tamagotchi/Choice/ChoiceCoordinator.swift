@@ -38,8 +38,4 @@ extension ChoiceCoordinator: ChoiceViewControllerDelegate {
     func alert(tamagotchi: Tamagotchi) {
         delegate?.alert(tamagotchi: tamagotchi)
     }
-    
-    func change(tamagotchi: Tamagotchi) {
-        delegate?.alert(tamagotchi: tamagotchi)
-    }
 }

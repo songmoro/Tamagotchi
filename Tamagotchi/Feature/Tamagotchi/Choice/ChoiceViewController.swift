@@ -14,29 +14,11 @@ final class ChoiceViewController: ViewController<ChoiceViewModel> {
     var delegate: ChoiceViewControllerDelegate?
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
-    private let mainViewModel: MainViewModel?
-    
-    override init(viewModel: ChoiceViewModel) {
-        self.mainViewModel = nil
-        super.init(viewModel: viewModel)
-        navigationItem.title = "다마고치 선택하기"
-    }
-    
-    init(mainViewModel: MainViewModel) {
-        self.mainViewModel = mainViewModel
-        super.init(viewModel: .init())
-        navigationItem.title = "다마고치 변경하기"
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
         bind()
-    }
-    
-    @available(*, deprecated)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     private func configure() {
@@ -53,17 +35,25 @@ final class ChoiceViewController: ViewController<ChoiceViewModel> {
     }
     
     private func bind() {
-        Observable.just(viewModel.data)
-            .asDriver(onErrorJustReturn: [])
+        let output = viewModel.transform(
+            .init(
+                model: collectionView.rx.modelSelected(Tamagotchi.self).asObservable()
+            )
+        )
+        
+        output.title
+            .drive(navigationItem.rx.title)
+            .disposed(by: disposeBag)
+        
+        output.items
             .drive(collectionView.rx.items(cellIdentifier: ChoiceCollectionViewCell.identifier, cellType: ChoiceCollectionViewCell.self)) {
                 $2.isUserInteractionEnabled = $1 != .preparing
                 $2.imageView.image = UIImage(named: $1.imageName(level: 6))
                 $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
             }
             .disposed(by: disposeBag)
-
-        collectionView.rx.modelSelected(Tamagotchi.self)
-            .asDriver()
+        
+        output.choice
             .drive(with: self) { owner, tamagotchi in
                 owner.delegate?.alert(tamagotchi: tamagotchi)
             }

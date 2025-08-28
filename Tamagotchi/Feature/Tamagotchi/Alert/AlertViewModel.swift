@@ -17,9 +17,10 @@ final class AlertViewModel: ViewModel {
         let acceptTap: Observable<Void>
     }
     struct Output {
-        let isChange: Driver<String>
+        let acceptTitle: Driver<String>
         let dismiss: Driver<Void>
         let start: Driver<Void>
+        let change: Driver<Void>
     }
     
     let tamagotchi: Tamagotchi
@@ -29,28 +30,40 @@ final class AlertViewModel: ViewModel {
     }
     
     func transform(_ input: Input) -> Output {
-        let isChange = Observable.just(Container.shared.account != nil)
+        let isChange = Container.shared.account != nil
+        let acceptTitle = Observable.just(isChange)
             .map { $0 ? "변경하기" : "시작하기" }
         let dismiss = PublishSubject<Void>()
         let acceptTap = input.acceptTap.share()
         let start = PublishSubject<Void>()
+        let change = PublishSubject<Void>()
         
         Observable.merge(input.cancelTap, acceptTap)
             .bind(to: dismiss)
             .disposed(by: disposeBag)
         
         acceptTap
-            .do(onNext: { [tamagotchi] in
+            .map { [tamagotchi] _ -> Bool in
                 let account = Account(tamagotchi: tamagotchi)
                 Container.shared.update(account)
-            })
-            .bind(to: start)
+                
+                return isChange
+            }
+            .bind {
+                if $0 {
+                    change.onNext(())
+                }
+                else {
+                    start.onNext(())
+                }
+            }
             .disposed(by: disposeBag)
         
         return .init(
-            isChange: isChange.asDriver(onErrorJustReturn: "시작하기"),
+            acceptTitle: acceptTitle.asDriver(onErrorJustReturn: "시작하기"),
             dismiss: dismiss.asDriver(onErrorJustReturn: ()),
-            start: start.asDriver(onErrorJustReturn: ())
+            start: start.asDriver(onErrorJustReturn: ()),
+            change: change.asDriver(onErrorJustReturn: ())
         )
     }
 }

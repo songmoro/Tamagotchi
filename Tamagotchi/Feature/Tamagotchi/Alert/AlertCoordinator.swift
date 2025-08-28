@@ -10,11 +10,13 @@ import UIKit
 protocol AlertCoordinatorDelegate {
     func finish(_ coordinator: AlertCoordinator)
     func choice(_ coordinator: AlertCoordinator)
+    func change(_ coordinator: AlertCoordinator)
 }
 
 protocol AlertViewControllerDelegate {
     func finish()
     func choice()
+    func change()
 }
 
 final class AlertCoordinator: Coordinator {
@@ -42,5 +44,9 @@ extension AlertCoordinator: AlertViewControllerDelegate {
     
     func choice() {
         delegate?.choice(self)
+    }
+    
+    func change() {
+        delegate?.change(self)
     }
 }

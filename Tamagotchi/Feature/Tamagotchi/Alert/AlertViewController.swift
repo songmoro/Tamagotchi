@@ -42,7 +42,7 @@ final class AlertViewController: ViewController<AlertViewModel> {
             )
         )
         
-        output.isChange
+        output.acceptTitle
             .drive(acceptButton.rx.title())
             .disposed(by: disposeBag)
         
@@ -56,6 +56,12 @@ final class AlertViewController: ViewController<AlertViewModel> {
         output.start
             .drive(with: self) { owner, _ in
                 owner.delegate?.choice()
+            }
+            .disposed(by: disposeBag)
+        
+        output.change
+            .drive(with: self) { owner, _ in
+                owner.delegate?.change()
             }
             .disposed(by: disposeBag)
     }
