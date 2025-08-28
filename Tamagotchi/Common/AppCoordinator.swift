@@ -7,13 +7,6 @@
 
 import UIKit
 
-// TODO: 데이터 초기화 시 선택 화면
-
-protocol Coordinator: AnyObject {
-    var navigationController: UINavigationController { get }
-    var childCoordinators: [Coordinator] { get set }
-}
-
 final class AppCoordinator: Coordinator {
     let navigationController: UINavigationController
     var childCoordinators: [Coordinator] = []
@@ -37,27 +30,6 @@ final class AppCoordinator: Coordinator {
         }
         
         return tabBarController
-    }
-    
-    private func appendChild(_ coordinator: Coordinator) {
-        childCoordinators.append(coordinator)
-    }
-    
-    private func removeChild(_ coordinator: Coordinator) {
-        childCoordinators = childCoordinators.filter { $0 !== coordinator }
-    }
-    
-    private func pop() {
-        navigationController.popViewController(animated: true)
-    }
-    
-    private func popToRoot() {
-        navigationController.popToRootViewController(animated: true)
-    }
-    
-    private func new() {
-        navigationController.viewControllers = []
-        childCoordinators = []
     }
     
     private func showOnboarding() {
