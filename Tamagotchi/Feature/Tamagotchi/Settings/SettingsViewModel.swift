@@ -20,7 +20,7 @@ final class SettingsViewModel: ViewModel {
         let row: Observable<Int>
     }
     struct Output {
-        let settings: Driver<[Settings]>
+        let settings: Driver<Settings>
         let nickname: Driver<Void>
         let change: Driver<Tamagotchi>
         let reset: Driver<Void>
@@ -28,7 +28,7 @@ final class SettingsViewModel: ViewModel {
     
     func transform(input: Input) -> Output {
         let rowAction = PublishRelay<Int>()
-        let settings = BehaviorRelay<[Settings]>(value: [])
+        let settings = BehaviorRelay<Settings>(value: .nickname(""))
         let account = Container.shared.account
         let nickname = PublishRelay<Void>()
         let change = PublishRelay<Tamagotchi>()
@@ -40,8 +40,8 @@ final class SettingsViewModel: ViewModel {
         
         account
             .compactMap(\.?.nickname)
-            .map { nickname -> [Settings] in
-                Settings.makeSettings(nickname)
+            .map { nickname -> Settings in
+                    .nickname(nickname)
             }
             .bind(to: settings)
             .disposed(by: disposeBag)
@@ -62,7 +62,7 @@ final class SettingsViewModel: ViewModel {
             .disposed(by: disposeBag)
         
         return .init(
-            settings: settings.asDriver(onErrorJustReturn: []),
+            settings: settings.asDriver(onErrorJustReturn: .nickname("")),
             nickname: nickname.asDriver(onErrorJustReturn: ()),
             change: change.asDriver(onErrorJustReturn: .cactus),
             reset: reset.asDriver(onErrorJustReturn: ())

@@ -13,6 +13,14 @@ import RxCocoa
 final class SettingsViewController: ViewController<SettingsViewModel> {
     var delegate: SettingsViewControllerDelegate?
     
+    var dataSource: UITableViewDiffableDataSource<Section, Settings>!
+    
+    enum Section {
+        case nickname
+        case tamagotchi
+        case reset
+    }
+    
     private let tableView = UITableView()
     
     override func viewDidLoad() {
@@ -24,21 +32,15 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     private func bind() {
         let output = viewModel.transform(
             input: .init(
-                row: tableView.rx.itemSelected.map(\.row).asObservable()
+                row: tableView.rx.itemSelected.map(\.section).asObservable()
             )
         )
         
         output.settings
-            .drive(tableView.rx.items(cellIdentifier: "Cell", cellType: UITableViewCell.self)) {
-                var configuration = UITableViewCell(style: .value2, reuseIdentifier: nil).defaultContentConfiguration()
-                configuration.text = $1.text
-                configuration.image = $1.image
-                configuration.secondaryText = $1.secondaryText
-                
-                $2.contentConfiguration = configuration
-                $2.tintColor = .tint
-                $2.backgroundColor = .clear
-                $2.accessoryType = .disclosureIndicator
+            .drive(with: self) { owner, settings in
+                var snapshot = owner.dataSource.snapshot()
+                snapshot.appendItems([settings], toSection: .nickname)
+                owner.dataSource.apply(snapshot)
             }
             .disposed(by: disposeBag)
         
@@ -75,5 +77,29 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
         tableView.separatorStyle = .singleLine
         tableView.separatorInset = .zero
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        
+        dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, itemIdentifier in
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            
+            var configuration = UITableViewCell(style: .value2, reuseIdentifier: nil).defaultContentConfiguration()
+            configuration.text = itemIdentifier.text
+            configuration.image = itemIdentifier.image
+            configuration.secondaryText = itemIdentifier.secondaryText
+            
+            cell.contentConfiguration = configuration
+            cell.tintColor = .tint
+            cell.backgroundColor = .clear
+            cell.accessoryType = .disclosureIndicator
+            
+            return cell
+        }
+        
+        tableView.dataSource = dataSource
+        
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Settings>()
+        snapshot.appendSections([.nickname, .tamagotchi, .reset])
+        snapshot.appendItems([.tamagotchi], toSection: .tamagotchi)
+        snapshot.appendItems([.reset], toSection: .reset)
+        dataSource.apply(snapshot)
     }
 }
