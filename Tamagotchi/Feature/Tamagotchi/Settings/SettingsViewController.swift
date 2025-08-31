@@ -26,7 +26,6 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-//        bind()
         react()
     }
     
@@ -64,47 +63,7 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
                 }
             }
             .disposed(by: disposeBag)
-        
-        viewModel.action
-            .bind(to: .init(value: .`init`))
-            .disposed(by: disposeBag)
     }
-    
-//    private func bind() {
-//        let output = viewModel.transform(
-//            input: .init(
-//                row: tableView.rx.itemSelected.map(\.section).asObservable()
-//            )
-//        )
-//        
-//        output.settings
-//            .drive(with: self) { owner, settings in
-//                var snapshot = owner.dataSource.snapshot()
-//                snapshot.appendItems([settings], toSection: .nickname)
-//                owner.dataSource.apply(snapshot)
-//            }
-//            .disposed(by: disposeBag)
-//        
-//        output.nickname
-//            .drive(with: self) { owner, _ in
-//                owner.delegate?.nickname()
-//            }
-//            .disposed(by: disposeBag)
-//        
-//        output.change
-//            .drive(with: self) { owner, tamagotchi in
-//                owner.delegate?.change(tamagotchi: tamagotchi)
-//            }
-//            .disposed(by: disposeBag)
-//        
-//        output.reset
-//            .drive(with: self) { owner, _ in
-//                owner.delegate?.reset {
-//                    Container.shared.account.accept(nil)
-//                }
-//            }
-//            .disposed(by: disposeBag)
-//    }
     
     private func configure() {
         navigationItem.title = "설정"

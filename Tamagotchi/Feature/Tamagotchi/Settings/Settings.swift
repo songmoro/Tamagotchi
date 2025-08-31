@@ -44,6 +44,10 @@ enum Settings: Hashable, CaseIterable {
         }
     }
     
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(text)
+    }
+    
     static func ==(lhs: Settings, rhs: Settings) -> Bool {
         return lhs.text == rhs.text
     }
