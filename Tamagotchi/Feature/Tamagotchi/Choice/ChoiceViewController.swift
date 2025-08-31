@@ -10,6 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+// TODO: ChoiceViewModelProtocol
 final class ChoiceViewController: ViewController<ChoiceViewModel> {
     var delegate: ChoiceViewControllerDelegate?
     

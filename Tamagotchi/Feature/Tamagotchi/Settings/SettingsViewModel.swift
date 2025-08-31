@@ -60,10 +60,7 @@ final class SettingsViewModel {
             guard let section = SettingsViewController.Section(rawValue: row) else {
                 return .just(.showFailedAlert(message: "화면을 전환하는 데 실패했습니다."))
             }
-            return .concat([
-                .just(.transition(to: section)),
-                .just(.transition(to: nil))
-            ])
+            return .just(.transition(to: section))
         }
     }
     

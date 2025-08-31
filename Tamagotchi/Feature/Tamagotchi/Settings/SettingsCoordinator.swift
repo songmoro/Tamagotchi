@@ -9,13 +9,13 @@ import UIKit
 
 protocol SettingsCoordinatorDelegate {
     func nickname()
-    func change(tamagotchi: Tamagotchi)
+    func change()
     func reset()
 }
 
 protocol SettingsViewControllerDelegate {
     func nickname()
-    func change(tamagotchi: Tamagotchi)
+    func change()
     func reset(handler: @escaping () -> Void)
 }
 
@@ -46,8 +46,8 @@ final class SettingsCoordinator: Coordinator, SettingsViewControllerDelegate {
         delegate?.nickname()
     }
     
-    func change(tamagotchi: Tamagotchi) {
-        delegate?.change(tamagotchi: tamagotchi)
+    func change() {
+        delegate?.change()
     }
     
     func reset(handler: @escaping () -> Void) {

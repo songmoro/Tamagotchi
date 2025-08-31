@@ -56,7 +56,7 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
                 case .nickname:
                     owner.delegate?.nickname()
                 case .tamagotchi:
-                    owner.delegate?.change(tamagotchi: .preparing)
+                    owner.delegate?.change()
                 case .reset:
                     owner.delegate?.reset {
                         Container.shared.account.accept(nil)
