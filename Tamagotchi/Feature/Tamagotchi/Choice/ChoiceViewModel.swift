@@ -9,6 +9,11 @@ import RxSwift
 import RxCocoa
 
 final class ChoiceViewModel: ViewModel {
+    enum Mode {
+        case choice
+        case change
+    }
+    
     deinit {
         print(self, #function)
     }
@@ -24,18 +29,25 @@ final class ChoiceViewModel: ViewModel {
         let choice: Driver<Tamagotchi>
     }
     
-    private let tamagotchi: Tamagotchi?
+    private let mode: Mode
     private let items: [Tamagotchi] = Tamagotchi.allCases
     
-    init(tamagotchi: Tamagotchi? = nil) {
-        self.tamagotchi = tamagotchi
+    init(mode: Mode) {
+        self.mode = mode
     }
     
     func transform(_ input: Input) -> Output {
         let items = Observable.just(items)
         let choice = PublishRelay<Tamagotchi>()
-        let title = Observable.just(tamagotchi == nil)
-            .map { $0 ? "다마고치 선택하기" : "다마고치 변경하기" }
+        let title = Observable.just(mode)
+            .map {
+                switch $0 {
+                case .choice:
+                    "다마고치 선택하기"
+                case .change:
+                    "다마고치 변경하기"
+                }
+            }
         
         input.model
             .bind(to: choice)

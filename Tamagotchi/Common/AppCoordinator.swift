@@ -46,11 +46,11 @@ final class AppCoordinator: Coordinator {
         coordinator.start()
     }
     
-    private func showChoiceVC() {
+    private func showChoiceVC(mode: ChoiceViewModel.Mode) {
         let coordinator = ChoiceCoordinator(navigationController: navigationController)
         appendChild(coordinator)
         coordinator.delegate = self
-        coordinator.start()
+        coordinator.start(mode: mode)
     }
     
     private func showChoiceAlertVC(tamagotchi: Tamagotchi) {
@@ -78,7 +78,7 @@ final class AppCoordinator: Coordinator {
 extension AppCoordinator: OnboardingCoordinatorDelegate {
     func choice(_ coordinator: OnboardingCoordinator) {
         new()
-        showChoiceVC()
+        showChoiceVC(mode: .choice)
     }
     
     func main(_ coordinator: OnboardingCoordinator) {
@@ -124,12 +124,12 @@ extension AppCoordinator: SettingsCoordinatorDelegate {
     }
     
     func change() {
-        showChoiceVC()
+        showChoiceVC(mode: .change)
     }
     
     func reset() {
         new()
-        showChoiceVC()
+        showOnboarding()
     }
 }
 

@@ -29,8 +29,8 @@ final class ChoiceCoordinator: Coordinator {
         self.navigationController = navigationController
     }
     
-    func start(tamagotchi: Tamagotchi? = nil) {
-        let vm = ChoiceViewModel(tamagotchi: tamagotchi)
+    func start(mode: ChoiceViewModel.Mode) {
+        let vm = ChoiceViewModel(mode: mode)
         let vc = ChoiceViewController(viewModel: vm)
         
         vc.delegate = self
