@@ -15,7 +15,7 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     
     var dataSource: UITableViewDiffableDataSource<Section, Settings>!
     
-    enum Section {
+    enum Section: Int {
         case nickname
         case tamagotchi
         case reset
@@ -26,17 +26,20 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-        bind()
+//        bind()
+        react()
     }
     
-    private func bind() {
-        let output = viewModel.transform(
-            input: .init(
-                row: tableView.rx.itemSelected.map(\.section).asObservable()
-            )
-        )
+    private func react() {
+        tableView.rx.itemSelected
+            .map(\.section)
+            .map(SettingsViewModel.Action.tap(row:))
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
         
-        output.settings
+        viewModel.state.map(\.settings)
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: .nickname(""))
             .drive(with: self) { owner, settings in
                 var snapshot = owner.dataSource.snapshot()
                 snapshot.appendItems([settings], toSection: .nickname)
@@ -44,26 +47,64 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
             }
             .disposed(by: disposeBag)
         
-        output.nickname
-            .drive(with: self) { owner, _ in
-                owner.delegate?.nickname()
-            }
-            .disposed(by: disposeBag)
-        
-        output.change
-            .drive(with: self) { owner, tamagotchi in
-                owner.delegate?.change(tamagotchi: tamagotchi)
-            }
-            .disposed(by: disposeBag)
-        
-        output.reset
-            .drive(with: self) { owner, _ in
-                owner.delegate?.reset {
-                    Container.shared.account.accept(nil)
+        viewModel.state.map(\.transition)
+            .distinctUntilChanged()
+            .asDriver(onErrorJustReturn: nil)
+            .compactMap(\.self)
+            .drive(with: self) { owner, transition in
+                switch transition {
+                case .nickname:
+                    owner.delegate?.nickname()
+                case .tamagotchi:
+                    owner.delegate?.change(tamagotchi: .preparing)
+                case .reset:
+                    owner.delegate?.reset {
+                        Container.shared.account.accept(nil)
+                    }
                 }
             }
             .disposed(by: disposeBag)
+        
+        viewModel.action
+            .bind(to: .init(value: .`init`))
+            .disposed(by: disposeBag)
     }
+    
+//    private func bind() {
+//        let output = viewModel.transform(
+//            input: .init(
+//                row: tableView.rx.itemSelected.map(\.section).asObservable()
+//            )
+//        )
+//        
+//        output.settings
+//            .drive(with: self) { owner, settings in
+//                var snapshot = owner.dataSource.snapshot()
+//                snapshot.appendItems([settings], toSection: .nickname)
+//                owner.dataSource.apply(snapshot)
+//            }
+//            .disposed(by: disposeBag)
+//        
+//        output.nickname
+//            .drive(with: self) { owner, _ in
+//                owner.delegate?.nickname()
+//            }
+//            .disposed(by: disposeBag)
+//        
+//        output.change
+//            .drive(with: self) { owner, tamagotchi in
+//                owner.delegate?.change(tamagotchi: tamagotchi)
+//            }
+//            .disposed(by: disposeBag)
+//        
+//        output.reset
+//            .drive(with: self) { owner, _ in
+//                owner.delegate?.reset {
+//                    Container.shared.account.accept(nil)
+//                }
+//            }
+//            .disposed(by: disposeBag)
+//    }
     
     private func configure() {
         navigationItem.title = "설정"
