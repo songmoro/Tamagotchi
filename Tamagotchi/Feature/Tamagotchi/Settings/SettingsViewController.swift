@@ -13,15 +13,21 @@ import RxCocoa
 final class SettingsViewController: ViewController<SettingsViewModel> {
     var delegate: SettingsViewControllerDelegate?
     
-    var dataSource: UITableViewDiffableDataSource<Section, Settings>!
-    
     enum Section: Int {
         case nickname
         case tamagotchi
         case reset
     }
     
-    private let tableView = UITableView()
+    private let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .background
+        tableView.separatorStyle = .singleLine
+        tableView.separatorInset = .zero
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        return tableView
+    }()
+    private var dataSource: UITableViewDiffableDataSource<Section, Settings>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,14 +74,10 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
         navigationItem.title = "설정"
         
         view.addSubview(tableView)
+        
         tableView.snp.makeConstraints {
             $0.edges.equalToSuperview(\.safeAreaLayoutGuide)
         }
-        
-        tableView.backgroundColor = .background
-        tableView.separatorStyle = .singleLine
-        tableView.separatorInset = .zero
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
         dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, itemIdentifier in
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
