@@ -43,15 +43,13 @@ final class SettingsViewController: ViewController<SettingsViewModel, SettingsCo
         viewModel.state.map(\.settings)
             .distinctUntilChanged()
             .drive(with: self) { owner, settings in
-                var snapshot = owner.dataSource.snapshot()
-                snapshot.deleteItems([settings])
-                snapshot.appendItems([settings], toSection: .nickname)
-                owner.dataSource.apply(snapshot)
+                owner.applySnapshot(nickname: settings)
             }
             .disposed(by: disposeBag)
         
-        viewModel.state.compactMap(\.section)
+        viewModel.state.map(\.section)
             .distinctUntilChanged()
+            .compactMap(\.self)
             .drive(with: self) {
                 $0.delegate?.section($1)
             }
@@ -86,10 +84,12 @@ final class SettingsViewController: ViewController<SettingsViewModel, SettingsCo
             
             return cell
         }
-        
+    }
+    
+    private func applySnapshot(nickname: Settings) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Settings>()
         snapshot.appendSections([.nickname, .tamagotchi, .reset])
-        snapshot.appendItems([.nickname("")], toSection: .nickname)
+        snapshot.appendItems([nickname], toSection: .nickname)
         snapshot.appendItems([.tamagotchi], toSection: .tamagotchi)
         snapshot.appendItems([.reset], toSection: .reset)
         dataSource.apply(snapshot)
