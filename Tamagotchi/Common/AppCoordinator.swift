@@ -119,6 +119,10 @@ extension AppCoordinator: MainCoordinatorDelegate {
 }
 
 extension AppCoordinator: SettingsCoordinatorDelegate {
+    func dismiss() {
+        
+    }
+    
     func nickname() {
         showNicknameVC()
     }

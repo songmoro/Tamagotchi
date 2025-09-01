@@ -11,7 +11,17 @@ import RxSwift
 import RxCocoa
 
 final class ChoiceViewController: ViewController<ChoiceViewModel, ChoiceCoordinator> {
-    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
+    private var dataSource: UICollectionViewDiffableDataSource<Section, Tamagotchi>!
+    private let collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
+        collectionView.register(ChoiceCollectionViewCell.self)
+        collectionView.backgroundColor = nil
+        return collectionView
+    }()
+    
+    enum Section {
+        case tamagotchi
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,15 +37,28 @@ final class ChoiceViewController: ViewController<ChoiceViewModel, ChoiceCoordina
             $0.bottom.equalToSuperview()
         }
         
-        collectionView.register(ChoiceCollectionViewCell.self)
-        collectionView.backgroundColor = nil
         collectionView.collectionViewLayout = layout()
+        
+        dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            let cell = collectionView.dequeueReusableCell(ChoiceCollectionViewCell.self, for: indexPath)
+            cell.isUserInteractionEnabled = itemIdentifier != .preparing
+            cell.imageView.image = UIImage(named: itemIdentifier.imageName(level: 6))
+            cell.label.configuration?.attributedTitle? = .init(itemIdentifier.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
+            
+            return cell
+        }
+        
+        collectionView.dataSource = dataSource
+        
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Tamagotchi>()
+        snapshot.appendSections([.tamagotchi])
+        dataSource.apply(snapshot)
     }
     
     private func bind() {
         let output = viewModel.transform(
             .init(
-                model: collectionView.rx.modelSelected(Tamagotchi.self).asObservable()
+                model: collectionView.rx.itemSelected(dataSource).asObservable()
             )
         )
         
@@ -43,17 +66,18 @@ final class ChoiceViewController: ViewController<ChoiceViewModel, ChoiceCoordina
             .drive(navigationItem.rx.title)
             .disposed(by: disposeBag)
         
-        output.items
-            .drive(collectionView.rx.items(cellIdentifier: ChoiceCollectionViewCell.identifier, cellType: ChoiceCollectionViewCell.self)) {
-                $2.isUserInteractionEnabled = $1 != .preparing
-                $2.imageView.image = UIImage(named: $1.imageName(level: 6))
-                $2.label.configuration?.attributedTitle? = .init($1.name, attributes: .init([.font: UIFont.systemFont(ofSize: 12, weight: .bold), .foregroundColor: UIColor.tint]))
-            }
-            .disposed(by: disposeBag)
-        
         output.choice
             .drive(with: self) { owner, tamagotchi in
                 owner.delegate?.alert(tamagotchi: tamagotchi)
+            }
+            .disposed(by: disposeBag)
+        
+        // TODO: 스냅샷에 바인드
+        output.items
+            .drive(with: self) { owner, items in
+                var snapshot = owner.dataSource.snapshot()
+                snapshot.appendItems(items, toSection: .tamagotchi)
+                owner.dataSource.apply(snapshot)
             }
             .disposed(by: disposeBag)
     }

@@ -10,10 +10,11 @@ import UIKit
 enum Tamagotchi: Int, Codable, CaseIterable {
     static var allCases: [Tamagotchi] = [
         .cactus, .sun, .starfish,
-        .preparing, .preparing, .preparing, .preparing, .preparing,
-        .preparing, .preparing, .preparing, .preparing, .preparing,
-        .preparing, .preparing, .preparing, .preparing, .preparing,
-        .preparing, .preparing, .preparing, .preparing, .preparing
+        .preparing
+//        , .preparing, .preparing, .preparing, .preparing,
+//        .preparing, .preparing, .preparing, .preparing, .preparing,
+//        .preparing, .preparing, .preparing, .preparing, .preparing,
+//        .preparing, .preparing, .preparing, .preparing, .preparing
     ]
     
     case cactus = 1

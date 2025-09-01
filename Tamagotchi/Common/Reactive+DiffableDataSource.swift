@@ -40,3 +40,35 @@ extension Reactive where Base: UITableView {
         return ControlEvent(events: source)
     }
 }
+
+extension Reactive where Base: UICollectionView {
+    func sectionSelected<SectionIdentifierType, ItemIdentifierType>(_ dataSource: UICollectionViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>) -> ControlEvent<SectionIdentifierType> where SectionIdentifierType: Hashable, SectionIdentifierType: Sendable, ItemIdentifierType: Hashable, ItemIdentifierType: Sendable {
+        let source: Observable<SectionIdentifierType> = self.itemSelected.flatMap { [weak view = self.base as UICollectionView] indexPath -> Observable<SectionIdentifierType> in
+            guard view != nil else {
+                return Observable.empty()
+            }
+            guard let section = dataSource.sectionIdentifier(for: indexPath.section) else {
+                return Observable.empty()
+            }
+            
+            return Observable.just(section)
+        }
+        
+        return ControlEvent(events: source)
+    }
+    
+    func itemSelected<SectionIdentifierType, ItemIdentifierType>(_ dataSource: UICollectionViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>) -> ControlEvent<ItemIdentifierType> where SectionIdentifierType: Hashable, SectionIdentifierType: Sendable, ItemIdentifierType: Hashable, ItemIdentifierType: Sendable {
+        let source: Observable<ItemIdentifierType> = self.itemSelected.flatMap { [weak view = self.base as UICollectionView] indexPath -> Observable<ItemIdentifierType> in
+            guard view != nil else {
+                return Observable.empty()
+            }
+            guard let item = dataSource.itemIdentifier(for: indexPath) else {
+                return Observable.empty()
+            }
+            
+            return Observable.just(item)
+        }
+        
+        return ControlEvent(events: source)
+    }
+}
