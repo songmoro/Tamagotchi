@@ -65,7 +65,10 @@ final class SettingsViewModel {
             return .just(.settings)
             
         case .section(let settings):
-            return .just(.transition(to: settings))
+            return .concat([
+                .just(.transition(to: settings)),
+                .just(.transition(to: nil))
+            ])
         }
     }
     
