@@ -77,7 +77,7 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
             }
             .disposed(by: disposeBag)
         
-        viewModel.state.map(\.transition)
+        viewModel.state.map(\.section)
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: nil)
             .compactMap(\.self)

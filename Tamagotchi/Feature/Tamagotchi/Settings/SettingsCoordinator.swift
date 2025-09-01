@@ -36,7 +36,7 @@ final class SettingsCoordinator: Coordinator, SettingsViewControllerDelegate {
     func start() {
         let account = Container.shared.account.value ?? .init(tamagotchi: .preparing)
         
-        let vm = SettingsViewModel(initialState: .init(account: account, settings: .nickname(""), transition: nil))
+        let vm = SettingsViewModel(initialState: .init(account: account, settings: .nickname(""), section: nil))
         let vc = SettingsViewController(viewModel: vm)
         vc.delegate = self
         navigationController.pushViewController(vc, animated: true)

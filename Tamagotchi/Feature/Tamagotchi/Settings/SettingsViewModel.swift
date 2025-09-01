@@ -23,14 +23,13 @@ final class SettingsViewModel {
     
     enum Mutation {
         case settings
-        case transition(to: SettingsViewController.Section?)
-        case showFailedAlert(message: String)
+        case section(SettingsViewController.Section?)
     }
     
     struct State {
         var account: Account
         var settings: Settings
-        var transition: SettingsViewController.Section?
+        var section: SettingsViewController.Section?
     }
     
     let action = PublishSubject<Action>()
@@ -48,12 +47,12 @@ final class SettingsViewModel {
                 guard let self else { return .empty() }
                 return self.mutate(action: action)
             }
-            .withLatestFrom(stateRelay) { mutation, currentState in
-                self.reduce(state: currentState, mutation: mutation)
+            .withLatestFrom(stateRelay) { [weak self] mutation, currentState -> State? in
+                guard let self else { return nil }
+                return self.reduce(state: currentState, mutation: mutation)
             }
-            .subscribe(onNext: self.stateRelay.onNext(_:), onDisposed: {
-                print("disposed")
-            })
+            .compactMap(\.self)
+            .bind(to: stateRelay)
             .disposed(by: disposeBag)
         
         action.onNext(.`init`)
@@ -66,8 +65,8 @@ final class SettingsViewModel {
             
         case .section(let settings):
             return .concat([
-                .just(.transition(to: settings)),
-                .just(.transition(to: nil))
+                .just(.section(settings)),
+                .just(.section(nil))
             ])
         }
     }
@@ -81,10 +80,8 @@ final class SettingsViewModel {
             let settings = Settings.nickname(nickname)
             
             newState.settings = settings
-        case .transition(let transitionType):
-            newState.transition = transitionType
-        case .showFailedAlert(let message):
-            print("\(message)")
+        case .section(let transitionType):
+            newState.section = transitionType
         }
         
         return newState
