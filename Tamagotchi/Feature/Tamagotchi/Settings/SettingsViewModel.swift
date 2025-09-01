@@ -9,6 +9,18 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+protocol ReactorProtocol {
+    associatedtype Action
+    associatedtype Mutation
+    associatedtype State
+    var action: PublishSubject<Action> { get set }
+    var stateRelay: BehaviorSubject<State> { get set }
+    var state: Driver<State> { get set }
+    init(initialState: State)
+    func mutate(action: Action) -> Observable<Mutation>
+    func reduce(state: State, mutation: Mutation) -> State
+}
+
 final class SettingsViewModel {
     private let disposeBag = DisposeBag()
     

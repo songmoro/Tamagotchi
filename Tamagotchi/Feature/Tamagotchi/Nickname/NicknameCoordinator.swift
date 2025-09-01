@@ -30,7 +30,7 @@ final class NicknameCoordinator: Coordinator, NicknameViewControllerDelegate {
     }
     
     func start() {
-        let vm = NicknameViewModel()
+        let vm = NicknameViewModel(initialState: .init())
         let vc = NicknameViewController(viewModel: vm)
         
         vc.delegate = self

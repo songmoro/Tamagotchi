@@ -18,25 +18,21 @@ final class NicknameViewController: ViewController<NicknameViewModel> {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-        bind()
+        react()
     }
     
-    private func bind() {
-        guard let barButtonItem = navigationItem.rightBarButtonItem else { return }
+    private func react() {
+        navigationItem.rightBarButtonItem?.rx.tap
+            .withLatestFrom(nicknameTextField.rx.text.orEmpty)
+            .map(NicknameViewModel.Action.text)
+            .bind(to: viewModel.action)
+            .disposed(by: disposeBag)
         
-        let output = viewModel.transform(
-            .init(
-                text: nicknameTextField.rx.text.orEmpty.asObservable(),
-                tap: barButtonItem.rx.tap.asObservable()
-            )
-        )
-        
-        output.account
-            .map(\.nickname)
+        viewModel.state.compactMap(\.account?.nickname)
             .drive(nicknameTextField.rx.placeholder)
             .disposed(by: disposeBag)
         
-        output.dismiss
+        viewModel.state.compactMap(\.dismiss)
             .drive(with: self) { owner, _ in
                 owner.delegate?.finish()
             }
