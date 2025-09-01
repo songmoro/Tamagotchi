@@ -55,17 +55,8 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
             .distinctUntilChanged()
             .asDriver(onErrorJustReturn: nil)
             .compactMap(\.self)
-            .drive(with: self) { owner, transition in
-                switch transition {
-                case .nickname:
-                    owner.delegate?.nickname()
-                case .tamagotchi:
-                    owner.delegate?.change()
-                case .reset:
-                    owner.delegate?.reset {
-                        Container.shared.account.accept(nil)
-                    }
-                }
+            .drive(with: self) {
+                $0.delegate?.section($1)
             }
             .disposed(by: disposeBag)
     }

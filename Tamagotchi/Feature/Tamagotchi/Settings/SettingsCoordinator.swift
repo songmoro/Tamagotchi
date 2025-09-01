@@ -14,12 +14,10 @@ protocol SettingsCoordinatorDelegate {
 }
 
 protocol SettingsViewControllerDelegate {
-    func nickname()
-    func change()
-    func reset(handler: @escaping () -> Void)
+    func section(_ section: SettingsViewController.Section)
 }
 
-final class SettingsCoordinator: Coordinator, SettingsViewControllerDelegate {
+final class SettingsCoordinator: Coordinator {
     deinit {
         print(self, #function)
     }
@@ -42,22 +40,35 @@ final class SettingsCoordinator: Coordinator, SettingsViewControllerDelegate {
         navigationController.pushViewController(vc, animated: true)
     }
     
-    func nickname() {
+    private func nickname() {
         delegate?.nickname()
     }
     
-    func change() {
+    private func change() {
         delegate?.change()
     }
     
-    func reset(handler: @escaping () -> Void) {
+    private func reset() {
         let alert = UIAlertController(title: "데이터 초기화", message: "정말 다시 처음부터 시작하실 건가용?", preferredStyle: .alert)
         alert.addAction(.init(title: "아냐!", style: .cancel))
         alert.addAction(.init(title: "웅", style: .destructive, handler: { [weak self] _ in
-            handler()
+            Container.shared.account.accept(nil)
             self?.delegate?.reset()
         }))
         
         navigationController.present(alert, animated: true)
+    }
+}
+
+extension SettingsCoordinator: SettingsViewControllerDelegate {
+    func section(_ section: SettingsViewController.Section) {
+        switch section {
+        case .nickname:
+            nickname()
+        case .tamagotchi:
+            change()
+        case .reset:
+            reset()
+        }
     }
 }
