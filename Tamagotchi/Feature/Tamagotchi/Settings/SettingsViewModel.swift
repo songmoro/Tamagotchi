@@ -34,9 +34,8 @@ final class SettingsViewModel {
     
     let action = PublishSubject<Action>()
     private let stateRelay: BehaviorSubject<State>
-    
-    var state: Observable<State> {
-        stateRelay.asObservable()
+    var state: Driver<State> {
+        stateRelay.asDriver(onErrorJustReturn: .init(account: .init(tamagotchi: .preparing), settings: .nickname("")))
     }
     
     init(initialState: State) {
@@ -58,7 +57,7 @@ final class SettingsViewModel {
         action.onNext(.`init`)
     }
     
-    func mutate(action: Action) -> Observable<Mutation> {
+    private func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .`init`:
             return .just(.settings)
@@ -71,7 +70,7 @@ final class SettingsViewModel {
         }
     }
     
-    func reduce(state: State, mutation: Mutation) -> State {
+    private func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
         
         switch mutation {

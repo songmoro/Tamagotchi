@@ -12,11 +12,10 @@ protocol OnboardingCoordinatorDelegate {
     func main(_ coordinator: OnboardingCoordinator)
 }
 protocol OnboardingViewControllerDelegate {
-    func choice()
-    func main()
+    func onboarding()
 }
 
-final class OnboardingCoordinator: Coordinator, OnboardingViewControllerDelegate {
+final class OnboardingCoordinator: Coordinator {
     deinit {
         print(self, #function)
     }
@@ -37,11 +36,22 @@ final class OnboardingCoordinator: Coordinator, OnboardingViewControllerDelegate
         navigationController.pushViewController(vc, animated: false)
     }
     
-    func choice() {
+    private func choice() {
         delegate?.choice(self)
     }
     
-    func main() {
+    private func main() {
         delegate?.main(self)
+    }
+}
+
+extension OnboardingCoordinator: OnboardingViewControllerDelegate {
+    func onboarding() {
+        if Container.shared.account.value == nil {
+            choice()
+        }
+        else {
+            main()
+        }
     }
 }

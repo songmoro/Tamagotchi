@@ -13,6 +13,13 @@ protocol SettingsCoordinatorDelegate {
     func reset()
 }
 
+// TODO: 코디네이터 딜리게이트 프로토콜 생성
+// -> NSObject 채택
+// -> Reactive 확장
+// -> vc.delegate.transition(_ type: TransitionType) where TransitionType: enum
+// = vc에서 화면 전환 분기 제거
+// = drive(with: self) -> drive(delegate.transition(_:))
+
 protocol SettingsViewControllerDelegate {
     func section(_ section: SettingsViewController.Section)
 }

@@ -16,14 +16,7 @@ final class OnboardingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = .label
-        
-        if Container.shared.account.value == nil {
-            delegate?.choice()
-        }
-        else {
-            delegate?.main()
-        }
+        delegate?.onboarding()
     }
 }
