@@ -134,6 +134,10 @@ extension AppCoordinator: SettingsCoordinatorDelegate {
 }
 
 extension AppCoordinator: NicknameCoordinatorDelegate {
+    func dismiss(_ coordinator: NicknameCoordinator) {
+        removeChild(coordinator)
+    }
+    
     func finish(_ coordinator: NicknameCoordinator) {
         removeChild(coordinator)
         popToRoot()

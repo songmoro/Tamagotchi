@@ -8,10 +8,12 @@
 import UIKit
 
 protocol NicknameCoordinatorDelegate {
+    func dismiss(_ coordinator: NicknameCoordinator)
     func finish(_ coordinator: NicknameCoordinator)
 }
 
 protocol NicknameViewControllerDelegate {
+    func dismiss()
     func finish()
 }
 
@@ -39,5 +41,9 @@ final class NicknameCoordinator: Coordinator, NicknameViewControllerDelegate {
     
     func finish() {
         delegate?.finish(self)
+    }
+    
+    func dismiss() {
+        delegate?.dismiss(self)
     }
 }
