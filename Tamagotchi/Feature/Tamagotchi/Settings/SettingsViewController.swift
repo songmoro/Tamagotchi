@@ -10,6 +10,38 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
+extension Reactive where Base: UITableView {
+    func sectionSelected<SectionIdentifierType, ItemIdentifierType>(_ dataSource: UITableViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>) -> ControlEvent<SectionIdentifierType> where SectionIdentifierType: Hashable, SectionIdentifierType: Sendable, ItemIdentifierType: Hashable, ItemIdentifierType: Sendable {
+        let source: Observable<SectionIdentifierType> = self.itemSelected.flatMap { [weak view = self.base as UITableView] indexPath -> Observable<SectionIdentifierType> in
+            guard view != nil else {
+                return Observable.empty()
+            }
+            guard let section = dataSource.sectionIdentifier(for: indexPath.section) else {
+                return Observable.empty()
+            }
+            
+            return Observable.just(section)
+        }
+        
+        return ControlEvent(events: source)
+    }
+    
+    func itemSelected<SectionIdentifierType, ItemIdentifierType>(_ dataSource: UITableViewDiffableDataSource<SectionIdentifierType, ItemIdentifierType>) -> ControlEvent<ItemIdentifierType> where SectionIdentifierType: Hashable, SectionIdentifierType: Sendable, ItemIdentifierType: Hashable, ItemIdentifierType: Sendable {
+        let source: Observable<ItemIdentifierType> = self.itemSelected.flatMap { [weak view = self.base as UITableView] indexPath -> Observable<ItemIdentifierType> in
+            guard view != nil else {
+                return Observable.empty()
+            }
+            guard let item = dataSource.itemIdentifier(for: indexPath) else {
+                return Observable.empty()
+            }
+            
+            return Observable.just(item)
+        }
+        
+        return ControlEvent(events: source)
+    }
+}
+
 final class SettingsViewController: ViewController<SettingsViewModel> {
     var delegate: SettingsViewControllerDelegate?
     
@@ -30,11 +62,55 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     }
     
     private func react() {
-        tableView.rx.itemSelected
-            .map(\.section)
-            .map(SettingsViewModel.Action.tap(row:))
+//        tableView.rx.itemSelected(dataSource)
+//            .bind {
+//                print($0)
+//            }
+//            .disposed(by: disposeBag)
+//        
+//        tableView.rx.sectionSelected(dataSource)
+//            .bind {
+//                print($0)
+//            }
+//            .disposed(by: disposeBag)
+        
+//        tableView.rx.itemSelected
+//            .bind(with: self) { owner, indexPath in
+//                let a = owner.dataSource.itemIdentifier(for: indexPath)
+//                print("model", a)
+//            }
+//            .disposed(by: disposeBag)
+//        
+//        tableView.rx.itemSelected
+//            .bind(with: self) { owner, indexPath in
+//                let a = owner.tableView.cellForRow(at: indexPath)
+//                print("cell", a)
+//            }
+//            .disposed(by: disposeBag)
+            
+//            .itemSelected
+//            .bind(with: self) { owner, indexPath in
+//                let cell = owner.tableView.cellForRow(at: indexPath)
+//                let snapshot = owner.dataSource.snapshot()
+//                print(cell)
+//                snapshot.
+//                print(snapshot.sectionIdentifiers)
+//                print(snapshot.itemIdentifiers)
+//                
+//                print(indexPath)
+//            }
+//            .disposed(by: disposeBag)
+        
+        tableView.rx.sectionSelected(dataSource)
+            .map(SettingsViewModel.Action.section)
             .bind(to: viewModel.action)
             .disposed(by: disposeBag)
+        
+//        tableView.rx.itemSelected
+//            .map(\.section)
+//            .map(SettingsViewModel.Action.tap(row:))
+//            .bind(to: viewModel.action)
+//            .disposed(by: disposeBag)
         
         viewModel.state.map(\.settings)
             .distinctUntilChanged()

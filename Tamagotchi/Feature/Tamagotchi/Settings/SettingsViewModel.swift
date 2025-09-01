@@ -18,7 +18,7 @@ final class SettingsViewModel {
     
     enum Action {
         case `init`
-        case tap(row: Int)
+        case section(SettingsViewController.Section)
     }
     
     enum Mutation {
@@ -64,11 +64,8 @@ final class SettingsViewModel {
         case .`init`:
             return .just(.settings)
             
-        case .tap(let row):
-            guard let section = SettingsViewController.Section(rawValue: row) else {
-                return .just(.showFailedAlert(message: "화면을 전환하는 데 실패했습니다."))
-            }
-            return .just(.transition(to: section))
+        case .section(let settings):
+            return .just(.transition(to: settings))
         }
     }
     
