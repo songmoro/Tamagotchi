@@ -32,6 +32,7 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
+        configureDataSource()
         react()
     }
     
@@ -70,6 +71,10 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
             $0.edges.equalToSuperview(\.safeAreaLayoutGuide)
         }
         
+        tableView.dataSource = dataSource
+    }
+    
+    private func configureDataSource() {
         dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, itemIdentifier in
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
             
@@ -85,8 +90,6 @@ final class SettingsViewController: ViewController<SettingsViewModel> {
             
             return cell
         }
-        
-        tableView.dataSource = dataSource
         
         var snapshot = NSDiffableDataSourceSnapshot<Section, Settings>()
         snapshot.appendSections([.nickname, .tamagotchi, .reset])
