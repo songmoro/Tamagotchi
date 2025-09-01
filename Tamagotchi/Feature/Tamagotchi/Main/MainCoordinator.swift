@@ -11,7 +11,7 @@ protocol MainCoordinatorDelegate {
     func settings()
 }
 
-protocol MainViewControllerDelegate {
+protocol MainViewControllerDelegate: ViewControllerDelegate {
     func settings()
 }
 
@@ -32,12 +32,15 @@ final class MainCoordinator: Coordinator, MainViewControllerDelegate {
     func start() {
         let vm = MainViewModel()
         let vc = MainViewController(viewModel: vm)
-        
         vc.delegate = self
         navigationController.viewControllers = [vc]
     }
     
     func settings() {
         delegate?.settings()
+    }
+    
+    func dismiss() {
+        
     }
 }

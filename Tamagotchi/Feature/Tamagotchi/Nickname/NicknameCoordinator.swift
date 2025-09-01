@@ -12,8 +12,7 @@ protocol NicknameCoordinatorDelegate {
     func finish(_ coordinator: NicknameCoordinator)
 }
 
-protocol NicknameViewControllerDelegate {
-    func dismiss()
+protocol NicknameViewControllerDelegate: ViewControllerDelegate {
     func finish()
 }
 
@@ -34,7 +33,6 @@ final class NicknameCoordinator: Coordinator, NicknameViewControllerDelegate {
     func start() {
         let vm = NicknameViewModel(initialState: .init())
         let vc = NicknameViewController(viewModel: vm)
-        
         vc.delegate = self
         navigationController.pushViewController(vc, animated: true)
     }

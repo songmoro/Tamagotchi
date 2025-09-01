@@ -10,9 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class AlertViewController: ViewController<AlertViewModel> {
-    var delegate: AlertViewControllerDelegate?
-    
+final class AlertViewController: ViewController<AlertViewModel, AlertCoordinator> {
     private let contentView = UIView()
     private let tamagotchiView = TamagochiView()
     private let descriptionLabel = UILabel()

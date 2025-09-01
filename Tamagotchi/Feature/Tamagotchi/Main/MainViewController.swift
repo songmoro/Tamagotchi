@@ -10,9 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class MainViewController: ViewController<MainViewModel> {
-    var delegate: MainViewControllerDelegate?
-    
+final class MainViewController: ViewController<MainViewModel, MainCoordinator> {
     private let bubbleImageView = UIImageView(image: .bubble)
     private let bubbleLabel = UILabel()
     private let tamagotchiView = TamagochiView()

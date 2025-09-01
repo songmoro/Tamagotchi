@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class LotteryViewController: ViewController<LotteryViewModel> {
+final class LotteryViewController: ViewController<LotteryViewModel, EmptyViewControllerDelegate> {
     private let searchBar = UISearchBar()
     private let label = UILabel()
     

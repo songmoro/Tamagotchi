@@ -11,7 +11,7 @@ protocol ChoiceCoordinatorDelegate {
     func alert(tamagotchi: Tamagotchi)
 }
 
-protocol ChoiceViewControllerDelegate {
+protocol ChoiceViewControllerDelegate: ViewControllerDelegate {
     func alert(tamagotchi: Tamagotchi)
 }
 
@@ -32,13 +32,16 @@ final class ChoiceCoordinator: Coordinator {
     func start(mode: ChoiceViewModel.Mode) {
         let vm = ChoiceViewModel(mode: mode)
         let vc = ChoiceViewController(viewModel: vm)
-        
         vc.delegate = self
         navigationController.pushViewController(vc, animated: true)
     }
 }
 
 extension ChoiceCoordinator: ChoiceViewControllerDelegate {
+    func dismiss() {
+        
+    }
+    
     func alert(tamagotchi: Tamagotchi) {
         delegate?.alert(tamagotchi: tamagotchi)
     }

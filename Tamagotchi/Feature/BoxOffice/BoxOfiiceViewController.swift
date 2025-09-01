@@ -10,7 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class BoxOfiiceViewController: ViewController<BoxOfiiceViewModel> {
+final class BoxOfiiceViewController: ViewController<BoxOfiiceViewModel, EmptyViewControllerDelegate> {
     private let searchBar = UISearchBar()
     private let label = UILabel()
     

@@ -10,13 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class NicknameViewController: ViewController<NicknameViewModel> {
-    deinit {
-        delegate?.dismiss()
-    }
-    
-    var delegate: NicknameViewControllerDelegate?
-    
+final class NicknameViewController: ViewController<NicknameViewModel, NicknameCoordinator> {
     private let nicknameTextField = UnderlineTextField()
     
     override func viewDidLoad() {

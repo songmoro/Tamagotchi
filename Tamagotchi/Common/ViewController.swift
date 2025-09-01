@@ -9,14 +9,23 @@ import UIKit
 import RxSwift
 
 protocol ViewModel { }
+protocol ViewControllerDelegate: AnyObject {
+    func dismiss()
+}
 
-class ViewController<ViewModel>: UIViewController {
+final class EmptyViewControllerDelegate: ViewControllerDelegate {
+    func dismiss() { }
+}
+
+class ViewController<ViewModel, Delegate: ViewControllerDelegate>: UIViewController {
     deinit {
         print(self, #function)
+        delegate?.dismiss()
     }
     
     let disposeBag = DisposeBag()
     let viewModel: ViewModel
+    var delegate: Delegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()

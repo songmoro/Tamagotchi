@@ -10,9 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class ChoiceViewController: ViewController<ChoiceViewModel> {
-    var delegate: ChoiceViewControllerDelegate?
-    
+final class ChoiceViewController: ViewController<ChoiceViewModel, ChoiceCoordinator> {
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: .init())
     
     override func viewDidLoad() {

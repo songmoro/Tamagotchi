@@ -10,9 +10,7 @@ import SnapKit
 import RxSwift
 import RxCocoa
 
-final class SettingsViewController: ViewController<SettingsViewModel> {
-    var delegate: SettingsViewControllerDelegate?
-    
+final class SettingsViewController: ViewController<SettingsViewModel, SettingsCoordinator> {
     enum Section: Int {
         case nickname
         case tamagotchi

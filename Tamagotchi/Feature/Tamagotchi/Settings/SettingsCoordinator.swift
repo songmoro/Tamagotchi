@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol SettingsCoordinatorDelegate {
+protocol SettingsCoordinatorDelegate: CoordinatorDelegate {
     func nickname()
     func change()
     func reset()
@@ -20,11 +20,11 @@ protocol SettingsCoordinatorDelegate {
 // = vc에서 화면 전환 분기 제거
 // = drive(with: self) -> drive(delegate.transition(_:))
 
-protocol SettingsViewControllerDelegate {
+protocol SettingsViewControllerDelegate: ViewControllerDelegate {
     func section(_ section: SettingsViewController.Section)
 }
 
-final class SettingsCoordinator: Coordinator {
+final class SettingsCoordinator: Coordinator, SettingsViewControllerDelegate {
     deinit {
         print(self, #function)
     }
@@ -65,9 +65,11 @@ final class SettingsCoordinator: Coordinator {
         
         navigationController.present(alert, animated: true)
     }
-}
-
-extension SettingsCoordinator: SettingsViewControllerDelegate {
+    
+    func dismiss() {
+        delegate?.dismiss()
+    }
+    
     func section(_ section: SettingsViewController.Section) {
         switch section {
         case .nickname:

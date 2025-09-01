@@ -13,7 +13,7 @@ protocol AlertCoordinatorDelegate {
     func change(_ coordinator: AlertCoordinator)
 }
 
-protocol AlertViewControllerDelegate {
+protocol AlertViewControllerDelegate: ViewControllerDelegate {
     func finish()
     func choice()
     func change()
@@ -42,6 +42,10 @@ final class AlertCoordinator: Coordinator {
 }
 
 extension AlertCoordinator: AlertViewControllerDelegate {
+    func dismiss() {
+        
+    }
+    
     func finish() {
         delegate?.finish(self)
     }
